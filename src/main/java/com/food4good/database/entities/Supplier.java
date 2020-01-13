@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(schema = "food4good", name = "supliers")
+@Table(schema = "food4good", name = "suppliers")
 @Getter
 @Setter
-public class Suplier extends  AbstractEntity{
+public class Supplier extends  AbstractEntity{
     @Column
     private String name;
 
@@ -30,9 +30,12 @@ public class Suplier extends  AbstractEntity{
     @Column
     private String latetude;
 
-    @OneToMany(mappedBy = "suplier", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column
+    private String rate;
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Dish> dishes = new HashSet<>();
 
-    public Suplier() {
+    public Supplier() {
     }
 }

@@ -25,9 +25,9 @@ public class OrdersControllers {
         this.ordersActivity = ordersActivity;
     }
 
-    @GetMapping(value = "/{suplierId}", produces = APPLICATION_JSON_VALUE)
-    public List<OrderReportDTO> userById(@PathVariable("suplierId") Long suplierId) throws Exception {
-        return orderReport.getById(suplierId);
+    @GetMapping(value = "/{supplierId}", produces = APPLICATION_JSON_VALUE)
+    public List<OrderReportDTO> userById(@PathVariable("supplierId") Long supplierId) throws Exception {
+        return orderReport.getById(supplierId);
     }
     @GetMapping(value = "/user}", produces = APPLICATION_JSON_VALUE)
     public List<OrderDTO> getOrdersOfUser() throws Exception {

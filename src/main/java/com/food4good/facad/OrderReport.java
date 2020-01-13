@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class OrderReport {
-    public List<OrderReportDTO> getById(Long suplierId) {
+    public List<OrderReportDTO> getById(Long supplierId) {
         return null;
     }
 }

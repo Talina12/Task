@@ -25,9 +25,9 @@ public class Dish extends  AbstractEntity{
     private Integer amount;
 
     @ManyToOne
-    @JoinColumn(name = "suplier_id", nullable = false)
+    @JoinColumn(name = "supplier_id", nullable = false)
     @JsonIgnore
-    private Suplier suplier;
+    private Supplier supplier;
 
     public Dish() {
     }
