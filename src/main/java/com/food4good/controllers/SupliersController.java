@@ -6,10 +6,7 @@ import com.food4good.dto.SuplierDTO;
 import com.food4good.dto.SuplierInfoDTO;
 import com.food4good.facad.SuplierFacad;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -35,5 +32,9 @@ public class SupliersController {
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<SuplierInfoDTO> getAllSupliersInfo() throws Exception {
         return suplierFacad.getAllInfo();
+    }
+    @PostMapping(produces = APPLICATION_JSON_VALUE)
+    public void setSupplier(@RequestBody String name) throws Exception {
+        System.out.println("----------------------"+name);
     }
 }
