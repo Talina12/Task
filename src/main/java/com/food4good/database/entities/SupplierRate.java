@@ -8,26 +8,26 @@ import javax.persistence.*;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "supplier_id"})},
-        schema = "food4good", name = "rate2User")
+        schema = "food4good", name = "supplierRate")
 @Getter
 @Setter
-public class Rate2User extends AbstractEntity {
+public class SupplierRate extends AbstractEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
     @JsonIgnore
     private Supplier supplier;
 
     @Column
-    private String rate;
+    private String commnet;
 
 
-    public Rate2User() {
+    public SupplierRate() {
     }
 
 }

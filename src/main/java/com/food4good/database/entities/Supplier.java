@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(schema = "food4good", name = "suppliers")
+@Table(schema = "food4good", name = "supplier")
 @Getter
 @Setter
 public class Supplier extends  AbstractEntity{
@@ -21,8 +21,11 @@ public class Supplier extends  AbstractEntity{
     @Column(name = "open_hours")
     private String openHours;
 
-    @Column
-    private String image;
+    @Column (name = "back_ground_image")
+    private String backGroundImage;
+
+    @Column (name = "logo_image")
+    private String logoImage;
 
     @Column
     private String longtitude;
@@ -31,10 +34,16 @@ public class Supplier extends  AbstractEntity{
     private String latetude;
 
     @Column
-    private String rate;
+    private String rates;
+
+    @Column(name="display_order")
+    private String displayOrder;
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Dish> dishes = new HashSet<>();
+    private Set<Products> products = new HashSet<>();
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SupplierFilters> filters = new HashSet<>();
 
     public Supplier() {
     }

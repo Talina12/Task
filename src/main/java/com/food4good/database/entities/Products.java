@@ -7,10 +7,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(schema = "food4good", name = "dishes")
+@Table(schema = "food4good", name = "products")
 @Getter
 @Setter
-public class Dish extends  AbstractEntity{
+public class Products extends  AbstractEntity{
 
     @Column
     private String name;
@@ -18,17 +18,26 @@ public class Dish extends  AbstractEntity{
     @Column
     private String description;
 
-    @Column
-    private String price;
+    @Column(name="fix_price")
+    private String fixPrice;
+
+    @Column(name="min_price")
+    private String minPrice;
+
+    @Column(name="max_price")
+    private String maxPrice;
 
     @Column
     private Integer amount;
 
-    @ManyToOne
+    @Column (name="original_price")
+    private String origPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
     @JsonIgnore
     private Supplier supplier;
 
-    public Dish() {
+    public Products() {
     }
 }

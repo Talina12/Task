@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class SupplierInfoDTO  extends BaseDTO {
     @JsonUnwrapped
     SupplierDTO supplierDTO;
-    private List<DishDTO> dishDTOList;
+    private List<ProductDTO> productDTOList;
 
     public static SupplierInfoDTO convertFromEntity(Supplier supplier) {
         SupplierDTO supplierDTO = SupplierDTO.convertFromEntity(supplier);
@@ -22,8 +22,8 @@ public class SupplierInfoDTO  extends BaseDTO {
         supplierInfoDTO.setId(supplier.getId());
         supplierInfoDTO.setCreatedAt(supplier.getCreatedAt().toString());
         supplierInfoDTO.setUpdatedAt(supplier.getUpdatedAt().toString());
-        List<DishDTO> dishDTOList = supplier.getDishes().stream().map(DishDTO::convertFromEntity).collect(Collectors.toList());
-        supplierInfoDTO.setDishDTOList(dishDTOList);
+        List<ProductDTO> productDTOList = supplier.getProducts().stream().map(ProductDTO::convertFromEntity).collect(Collectors.toList());
+        supplierInfoDTO.setProductDTOList(productDTOList);
         return supplierInfoDTO;
     }
 }

@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(schema = "food4good", name = "users")
+@Table(schema = "food4good", name = "user")
 @Getter
 @Setter
 public class User extends  AbstractEntity{
@@ -31,6 +33,9 @@ public class User extends  AbstractEntity{
 
     @Column
     private String roles;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UsersPreference> preferences = new HashSet<>();
 
     public User() {
     }
