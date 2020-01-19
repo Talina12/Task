@@ -33,8 +33,15 @@ public class SuppliersController {
     public List<SupplierInfoDTO> getAllsuppliersInfo() throws Exception {
         return supplierFacad.getAllInfo();
     }
+
+
     @PostMapping(produces = APPLICATION_JSON_VALUE)
     public void setSupplier(@RequestBody String name) throws Exception {
         System.out.println("----------------------"+name);
+    }
+
+    @PostMapping(path = "/favorite/{supplierId}")
+    public void add2SupplierRate(@PathVariable("supplierId") long supplierId) throws Exception {
+        supplierFacad.addSupplierRate(supplierId,Long.valueOf(1));
     }
 }
