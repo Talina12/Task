@@ -13,9 +13,9 @@ import com.food4good.database.entities.User;
 @Repository
 public interface SupplierRateRepository extends JpaRepository<SupplierRate, Long>{
 
-	Optional<SupplierRate> findByUserandSupplier(User user,Supplier supplier);
+	Optional<SupplierRate> findByUserAndSupplier(User user,Supplier supplier);
 	void delete (SupplierRate supplierRate);
 	List<SupplierRate> findAllBySupplier (Supplier supplier);
-	Long countBySupplier(Supplier suppplier);
+	int countBySupplier(Supplier suppplier);
 	
 };
