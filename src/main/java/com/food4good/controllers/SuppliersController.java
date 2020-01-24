@@ -43,7 +43,9 @@ public class SuppliersController {
 
     @PostMapping(path = "/favorite/{supplierId}")
     public ResponseEntity addRate(@PathVariable("supplierId") long supplierId) throws Exception {
-       int finalRate= supplierService.addSupplierRate(supplierId,Long.valueOf(1));
+        String userToken=" ";
+        User user = usersFacad.getByToken(userToken);
+        int finalRate= supplierService.addSupplierRate(supplierId,user.getId());
         return ResponseEntity.ok(finalRate);
     }
     
