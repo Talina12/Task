@@ -1,3 +1,4 @@
+
 package com.food4good.database.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,12 +25,21 @@ public class Orders extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private User user;
+    private User users;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderProducts> products = new HashSet<>();
+    
+    @Column
+    private String comments;
 
     public Orders() {
 
     }
+    
+    public void setProducts(Set<OrderProducts> products) {
+    	this.products.clear();
+    	this.products.addAll(products);
+    }
 }
+
