@@ -6,10 +6,8 @@ import com.food4good.dto.OrderReportDTO;
 import com.food4good.facad.OrderReport;
 import com.food4good.facad.OrdersActivity;
 import com.food4good.facad.UsersFacad;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,11 +16,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/order")
 public class OrdersControllers {
+    private UsersFacad usersFacad;
     private final OrderReport orderReport;
     private final OrdersActivity ordersActivity;
     public OrdersControllers(UsersFacad users, OrderReport orderReport, OrdersActivity ordersActivity) {
         this.orderReport = orderReport;
         this.ordersActivity = ordersActivity;
+        this.usersFacad=usersFacad;
     }
 
     @GetMapping(value = "/{supplierId}", produces = APPLICATION_JSON_VALUE)
@@ -33,5 +33,15 @@ public class OrdersControllers {
     public List<OrderDTO> getOrdersOfUser() throws Exception {
         return ordersActivity.geOrdersByUser();
     }
+
+    @PostMapping(path = "/cancel/{order_id}")
+    public ResponseEntity cancelOrder(@PathVariable("order_id") long orderId) throws Exception {
+        String userToken=" ";
+        User user = usersFacad.getByToken(userToken);
+        ordersActivity.cancelOrder(orderId,user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }
