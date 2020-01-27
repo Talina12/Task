@@ -25,7 +25,7 @@ public class Orders extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private User users;
+    private User user;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderProducts> products = new HashSet<>();

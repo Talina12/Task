@@ -6,7 +6,7 @@ import com.food4good.database.entities.User;
 import com.food4good.dto.SupplierDTO;
 import com.food4good.dto.SupplierInfoDTO;
 import com.food4good.facad.SupplierService;
-import com.food4good.facad.UsersFacad;
+import com.food4good.facad.UsersService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,11 +24,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Validated
 public class SuppliersController {
     private SupplierService supplierService;
-    private UsersFacad usersFacad;
+    private UsersService usersService;
 
-    public SuppliersController(SupplierService supplierService, UsersFacad usersFacad) {
+    public SuppliersController(SupplierService supplierService, UsersService usersService) {
         this.supplierService=supplierService;
-        this.usersFacad=usersFacad;
+        this.usersService=usersService;
     }
     
     @GetMapping(value = "/{supplierId}", produces = APPLICATION_JSON_VALUE)
@@ -44,7 +44,7 @@ public class SuppliersController {
     @PostMapping(path = "/favorite/{supplierId}")
     public ResponseEntity addRate(@PathVariable("supplierId") long supplierId) throws Exception {
         String userToken=" ";
-        User user = usersFacad.getByToken(userToken);
+        User user = usersService.getByToken(userToken);
         int finalRate= supplierService.addSupplierRate(supplierId,user.getId());
         return ResponseEntity.ok(finalRate);
     }
@@ -52,7 +52,7 @@ public class SuppliersController {
     @DeleteMapping(value ="/favorite/{supplierId}")
     public ResponseEntity deleteRate(@PathVariable("supplierId") long supplierId ) throws Exception {
     	String userToken=" ";
-    	User user = usersFacad.getByToken(userToken);
+    	User user = usersService.getByToken(userToken);
     	int finalRate=supplierService.deleteSupplierRate(supplierId,user.getId());
         return ResponseEntity.ok(finalRate);
     }

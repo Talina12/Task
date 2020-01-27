@@ -7,10 +7,9 @@ import com.food4good.dto.OrderReportDTO;
 import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
 import com.food4good.facad.OrderReport;
-import com.food4good.facad.OrdersActivity;
-import com.food4good.facad.OrdersFasad;
-import com.food4good.facad.UsersFacad;
+import com.food4good.facad.OrdersService;
 
+import com.food4good.facad.UsersService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,14 +27,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/order")
 public class OrdersControllers {
     private final OrderReport orderReport;
-    private final OrdersActivity ordersActivity;
-    private UsersFacad usersFacad;
-    private OrdersFasad ordersFasad;
-    public OrdersControllers(UsersFacad users, OrderReport orderReport, OrdersActivity ordersActivity,OrdersFasad ordersFasad) {
+    private UsersService usersService;
+    private OrdersService ordersService;
+    public OrdersControllers(UsersService usersService, OrderReport orderReport, OrdersService ordersService) {
         this.orderReport = orderReport;
-        this.ordersActivity = ordersActivity;
-        this.usersFacad=users;
-        this.ordersFasad=ordersFasad;
+        this.usersService=usersService;
+        this.ordersService=ordersService;
     }
 
     @GetMapping(value = "/{supplierId}", produces = APPLICATION_JSON_VALUE)
@@ -44,22 +41,22 @@ public class OrdersControllers {
     }
     @GetMapping(value = "/user}", produces = APPLICATION_JSON_VALUE)
     public List<OrderDTO> getOrdersOfUser() throws Exception {
-        return ordersActivity.geOrdersByUser();
+        return ordersService.geOrdersByUser();
     }
     
     @PostMapping (value="/init")
     public ResponseEntity<NewOrderResponse> createNewOrder(@Validated @RequestBody NewOrderRequest orderRequest) throws Exception {
     	String userToken="123";
-    	User user = usersFacad.getByToken(userToken);
-    	return ResponseEntity.ok(ordersFasad.addOrder(user.getId(), orderRequest.getProductsRows(), orderRequest.getComments()));
+    	User user = usersService.getByToken(userToken);
+    	return ResponseEntity.ok(ordersService.addOrder(user.getId(), orderRequest.getProductsRows(), orderRequest.getComments()));
     	
     }
     
     @PostMapping(path = "/cancel/{order_id}")
     public ResponseEntity cancelOrder(@PathVariable("order_id") long orderId) throws Exception {
         String userToken=" ";
-        User user = usersFacad.getByToken(userToken);
-        ordersActivity.cancelOrder(orderId,user.getId());
+        User user = usersService.getByToken(userToken);
+        ordersService.cancelOrder(orderId,user);
         return ResponseEntity.ok().build();
     }
 
