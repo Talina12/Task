@@ -16,6 +16,6 @@ public interface SupplierRateRepository extends JpaRepository<SupplierRate, Long
 	Optional<SupplierRate> findByUserAndSupplier(User user,Supplier supplier);
 	void delete (SupplierRate supplierRate);
 	List<SupplierRate> findAllBySupplier (Supplier supplier);
-	int countBySupplier(Supplier suppplier);
+	int countBySupplier(Supplier supplier);
 	
 };

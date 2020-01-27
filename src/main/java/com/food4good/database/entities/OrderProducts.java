@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Setter
 public class OrderProducts extends AbstractEntity {
 
-
         @Column
         private String price;
 
