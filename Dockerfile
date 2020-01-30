@@ -1,6 +1,5 @@
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
 EXPOSE 8080
-ARG JAR_FILE=target/app_be-0.0.1-SNAPSHOT.jar
-ADD ${JAR_FILE} app_be.jar
+ADD application/build/libs/application-1.0.0.jar /app.jar
 ENTRYPOINT ["java","-jar","/app_be.jar"]
