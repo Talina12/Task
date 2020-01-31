@@ -12,7 +12,7 @@ spring:
       max-file-size: ${MAX_FILE_SIZE:1MB}
       max-request-size: ${MAX_FILE_SIZE:1MB}
   datasource:
-    url: jdbc:postgresql://${PG_HOST:127.0.0.1}:5432/${PG_DB_NAME:test}
+    url: jdbc:postgresql://${PG_HOST:127.0.0.1}:${PG_PORT:5432}/${PG_DATABASE:test}?prepareThreshold=0
     username: ${PG_USER:postgres}
     password: ${PG_PASS:12345678}
     hikari:
