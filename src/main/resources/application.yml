@@ -1,12 +1,10 @@
 server:
   servlet:
     context-path: /backend/
+  port: 5000
 spring:
   application:
-    name: ${RETAILER_NAME:SuperupCore}
-  profiles:
-    active:
-      - dev
+    name: ${RETAILER_NAME:Food4Good}
   main:
     allow-bean-definition-overriding: true
   servlet:

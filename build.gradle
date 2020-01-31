@@ -5,11 +5,19 @@ plugins {
 }
 
 group = 'com.food4good'
-version = '0.0.1-SNAPSHOT'
+version = System.properties['spring.profiles.active']+'-0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+}
+bootRun {
+	String activeProfile =  System.properties['spring.profiles.active']
+	systemProperty "spring.profiles.active", activeProfile
+	if(activeProfile==null)
+	{
+		systemProperty "spring.profiles.active", 'tst'
+	}
 }
 
 dependencies {
