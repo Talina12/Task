@@ -48,7 +48,7 @@ public class OrdersControllers {
     public ResponseEntity<NewOrderResponse> createNewOrder(@Validated @RequestBody NewOrderRequest orderRequest) throws Exception {
     	String userToken="123";
     	User user = usersService.getByToken(userToken);
-    	return ResponseEntity.ok(ordersService.addOrder(user.getId(), orderRequest.getProductsRows(), orderRequest.getComments()));
+    	return ResponseEntity.ok(ordersService.addOrder(orderRequest, user));
     	
     }
     

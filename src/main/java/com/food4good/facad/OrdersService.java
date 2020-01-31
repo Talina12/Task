@@ -2,6 +2,7 @@ package com.food4good.facad;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -17,6 +18,7 @@ import com.food4good.database.repositories.OrdersRepository;
 import com.food4good.database.repositories.ProductsRepository;
 import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.NewOrderProductRequest;
+import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
 
 
@@ -35,31 +37,21 @@ public class OrdersService {
 	 this.orderProductsRepository=orderProductsRepository;
  }
  
- public NewOrderResponse addOrder(Long userId, NewOrderProductRequest[] productsRows, String comments) throws Exception  {
+ public NewOrderResponse addOrder(NewOrderRequest orderRequest, User user) throws Exception  {
 	Orders newOrder= new Orders();
-	User user=usersRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
 	newOrder.setUser(user);
-	newOrder.setComments(comments);
+	newOrder.setComments(orderRequest.getComments());
 	newOrder.setStatus(OrderStatus.NEW.getStatus());
 	newOrder=ordersReppository.save(newOrder);
 
 	HashSet<OrderProducts> productSet  = new HashSet<OrderProducts>();
-	for (NewOrderProductRequest row:productsRows) {
-	 Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
-	 OrderProducts newOrderProduct= new OrderProducts();
-	 newOrderProduct.setAmount(row.getProductAmount());
-	 newOrderProduct.setOrders(newOrder);
-	 if (product.getFixPrice()!=null) newOrderProduct.setPrice(product.getFixPrice());
-	 else newOrderProduct.setPrice(product.getMaxPrice());
-	 newOrderProduct.setProducts(product);
-	 newOrderProduct= orderProductsRepository.save(newOrderProduct);
-	 productSet.add(newOrderProduct);
+	for (NewOrderProductRequest row:orderRequest.getProductsRows()) {
+      productSet.add(createOrderProduct(row,newOrder));
 	 }
+	
 	newOrder.setProducts(productSet);
-	double totalPrice=0;
-	for (OrderProducts orderProduct :productSet)
-	 totalPrice=totalPrice+Double.parseDouble(orderProduct.getPrice())* orderProduct.getAmount();	
-	newOrder.setTotalPrice(String.valueOf(totalPrice));
+	
+	newOrder.setTotalPrice();
 	newOrder =ordersReppository.save(newOrder);
 	return new NewOrderResponse(newOrder);
  }
@@ -71,6 +63,17 @@ public class OrdersService {
 		Orders order = ordersReppository.findByIdAndUser(orderId, user).orElseThrow(() -> new Exception("cannot find this order for user id"));
 		order.setStatus(OrderStatus.CANCELED.getStatus());
 		ordersReppository.save(order);
+	}
+	
+	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder) {
+		Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
+		OrderProducts newOrderProduct= new OrderProducts();
+		 newOrderProduct.setAmount(row.getProductAmount());
+		 newOrderProduct.setOrders(newOrder);
+		 if (product.getFixPrice()!=null) newOrderProduct.setPrice(product.getFixPrice());
+		 else newOrderProduct.setPrice(product.getMaxPrice());
+		 newOrderProduct.setProducts(product);
+		 return (orderProductsRepository.save(newOrderProduct));
 	}
 
 }
