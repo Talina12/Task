@@ -19,7 +19,7 @@ public class UsersService {
     }
     
     public User getByToken(String token) throws Exception{
-    	User userEntity=usersRepository.findByToken(token).orElseThrow(()->new Exception("user not found"));
+    	User userEntity=usersRepository.findByToken(token).orElseThrow(()->new EntityNotFoundException("user not found"));
     	return userEntity;
     }
 }

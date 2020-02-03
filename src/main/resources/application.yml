@@ -1,7 +1,7 @@
 server:
   servlet:
     context-path: /backend/
-  port: 5000
+  port: ${PORT:8080}
 spring:
   application:
     name: ${RETAILER_NAME:Food4Good}

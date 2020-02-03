@@ -1,5 +1,6 @@
 package com.food4good.facad;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +46,8 @@ public class OrdersService {
 	newOrder=ordersReppository.save(newOrder);
 
 	HashSet<OrderProducts> productSet  = new HashSet<OrderProducts>();
-	for (NewOrderProductRequest row:orderRequest.getProductsRows()) {
+	 List<NewOrderProductRequest> productsRows = orderRequest.getProductsRows();
+	 for (NewOrderProductRequest row: productsRows) {
       productSet.add(createOrderProduct(row,newOrder));
 	 }
 	
