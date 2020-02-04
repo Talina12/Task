@@ -7,6 +7,7 @@ import com.food4good.dto.OrderReportDTO;
 import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
 import com.food4good.facad.OrderReport;
+import com.food4good.facad.OrderStatus;
 import com.food4good.facad.OrdersService;
 
 import com.food4good.facad.UsersService;
@@ -56,7 +57,15 @@ public class OrdersControllers {
     public ResponseEntity cancelOrder(@PathVariable("order_id") long orderId) throws Exception {
         String userToken=" ";
         User user = usersService.getByToken(userToken);
-        ordersService.cancelOrder(orderId,user);
+        ordersService.setOrderStatus(orderId,user, OrderStatus.CANCELED);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/closed/{order_id}")
+    public ResponseEntity closeOrder(@PathVariable("order_id") long orderId) throws Exception {
+        String userToken=" ";
+        User user = usersService.getByToken(userToken);
+        ordersService.setOrderStatus(orderId,user, OrderStatus.DELIVERED);
         return ResponseEntity.ok().build();
     }
 

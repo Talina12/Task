@@ -61,12 +61,12 @@ public class OrdersService {
 		return null;
 	}
 
-	public void cancelOrder(long orderId,User user)throws Exception {
+	public void setOrderStatus(long orderId,User user,OrderStatus status)throws Exception {
 		Orders order = ordersReppository.findByIdAndUser(orderId, user).orElseThrow(() -> new Exception("cannot find this order for user id"));
-		order.setStatus(OrderStatus.CANCELED.getStatus());
+		order.setStatus(status.getStatus());
 		ordersReppository.save(order);
 	}
-	
+
 	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder) {
 		Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
 		OrderProducts newOrderProduct= new OrderProducts();
