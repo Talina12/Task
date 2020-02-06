@@ -1,25 +1,24 @@
 package com.food4good.controllers;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import javax.persistence.EntityNotFoundException;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
-import com.food4good.dto.NewOrderResponse;
-import com.food4good.dto.geocoding.GoogleCoordinatesResults;
 import com.food4good.facad.AddressService;
 
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/address")
 public class AddressController {
@@ -31,14 +30,15 @@ public class AddressController {
 	}
 	
 	@PostMapping (value="/validation")
-	public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody CoordinatesRequest coordinatesRequest1) throws Exception
-	{
-		CoordinatesRequest coordinatesRequest=new CoordinatesRequest();
-		coordinatesRequest.setCity("Краснодар ");
-		coordinatesRequest.setCountry("Россия ");
-		coordinatesRequest.setHousNumber("200");
-		coordinatesRequest.setStreet("Аэродромная ");
-		CoordinatesResponse	result = addressService.getCoordinates(coordinatesRequest);
+	public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody CoordinatesRequest coordinatesRequest) throws ResponseStatusException
+	{CoordinatesResponse	result;
+		try {
+		 	result = addressService.getCoordinates(coordinatesRequest);	
+		} catch (EntityNotFoundException e) {
+			log.debug(e.getMessage());
+			e.printStackTrace();
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity Not Found", e);
+		}
 		return(ResponseEntity.ok(result));
 	}
 

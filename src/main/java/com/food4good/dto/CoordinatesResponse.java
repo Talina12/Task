@@ -19,6 +19,7 @@ public class CoordinatesResponse {
 		if (googleresult.getResults().size()!=1) 
 			throw new EntityNotFoundException("Status= "+googleresult.getStatus()+'\n'+googleresult.getError_message());
 		this.latitude=googleresult.getResults().get(0).getGeometry().getLocation().getLat();
-		this.longitude=googleresult.getResults().get(0).getGeometry().getLocation().getLng();
-		}
+		this.longitude=googleresult.getResults().get(0).getGeometry().getLocation().getLng();}
+		
 }
+
