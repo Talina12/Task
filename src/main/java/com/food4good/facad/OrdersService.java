@@ -8,7 +8,10 @@ import java.util.*;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.food4good.config.BadRequestException;
+import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +28,21 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class OrdersService {
+
  OrdersRepository ordersReppository;
  UsersRepository usersRepository;
  ProductsRepository productsRepository;
  OrderProductsRepository orderProductsRepository;
- private static int HOURS_BEFORE_CLOSE = 3;
- 
+ private final int hoursBeforeClose;
+
+ @Autowired
  public OrdersService(OrdersRepository ordersReppository, UsersRepository usersRepository,
-		 ProductsRepository productsRepository, OrderProductsRepository orderProductsRepository) {
+					  ProductsRepository productsRepository, OrderProductsRepository orderProductsRepository,GlobalProperties globalProperties) {
 	 this.ordersReppository= ordersReppository;
 	 this.usersRepository=usersRepository;
 	 this.productsRepository= productsRepository;
 	 this.orderProductsRepository=orderProductsRepository;
+	 this.hoursBeforeClose = globalProperties.getHoursBeforeClose();
  }
  
  public NewOrderResponse addOrder(NewOrderRequest orderRequest, User user) throws Exception  {
@@ -76,11 +82,12 @@ public class OrdersService {
 			String pickUpTime = product.getSupplier().getOpenHours();
 			if(pickUpTime!=null&&!pickUpTime.equals(""))
 			{
-				if(!checkHoursRange(pickUpTime, HOURS_BEFORE_CLOSE))
-					throw new  HttpClientErrorException(HttpStatus.BAD_REQUEST, "time range not valid");
+				if(!checkHoursRange(pickUpTime, hoursBeforeClose))
+					throw new BadRequestException("time range not valid");
 			}
 		}
 	}
+
 
 	public boolean checkHoursRange(String openHours, int diff){
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
