@@ -1,3 +1,5 @@
+properties:
+  hours-before-close: 3
 server:
   servlet:
     context-path: /backend/
