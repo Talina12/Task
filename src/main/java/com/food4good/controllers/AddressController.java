@@ -1,8 +1,5 @@
 package com.food4good.controllers;
 
-import javax.persistence.EntityNotFoundException;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +12,6 @@ import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
 import com.food4good.facad.AddressService;
 
-import lombok.extern.slf4j.Slf4j;
-
-
-@Slf4j
 @RestController
 @RequestMapping("/address")
 public class AddressController {
@@ -30,16 +23,19 @@ public class AddressController {
 	}
 	
 	@PostMapping (value="/validation")
-	public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody CoordinatesRequest coordinatesRequest) throws ResponseStatusException
-	{CoordinatesResponse	result;
-		try {
-		 	result = addressService.getCoordinates(coordinatesRequest);	
-		} catch (EntityNotFoundException e) {
-			log.debug(e.getMessage());
-			e.printStackTrace();
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity Not Found", e);
-		}
+    public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody CoordinatesRequest coordinatesRequest1) throws ResponseStatusException
+	{
+		CoordinatesRequest coordinatesRequest=new CoordinatesRequest();
+		coordinatesRequest.setCity("Krasnodar");
+		coordinatesRequest.setCountry("Russia");
+		coordinatesRequest.setHousNumber("200");
+		coordinatesRequest.setStreet("Aerodromnaya");
+		CoordinatesResponse	result;
+		result = addressService.getCoordinates(coordinatesRequest);	
 		return(ResponseEntity.ok(result));
 	}
+	
+	//@PostMapping (value="/destination")
+	
 
 }

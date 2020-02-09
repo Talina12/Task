@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Result {
+public class AddresInfoResult {
 	 private ArrayList<AddressComponent> address_components;
 	 private String formatted_address;
 	 private Geometry geometry;

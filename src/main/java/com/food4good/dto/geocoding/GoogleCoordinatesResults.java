@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GoogleCoordinatesResults {
- private ArrayList<Result> results;
+ private ArrayList<AddresInfoResult> results;
  private String status;
  private String error_message;
 }

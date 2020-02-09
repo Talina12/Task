@@ -2,47 +2,60 @@ package com.food4good.facad;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.food4good.config.BadRequestException;
+import com.food4good.controllers.AddressController;
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
+import com.food4good.dto.geocoding.GeocodingConfig;
 import com.food4good.dto.geocoding.GoogleCoordinatesResults;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class AddressService {
 
-	private WebClient client = WebClient
-			  .builder()
-			    .baseUrl("https://maps.googleapis.com/maps/api")
-			  .build();
+	private GeocodingConfig geoConfig;
 	
-	private String key="AIzaSyC8vq02IetvzCNGAWAHIJIumg15D-NIh3c";
+	private WebClient client; 
 	
+	public AddressService(GeocodingConfig geoConfig) {
+		this.geoConfig= geoConfig;
+		client = WebClient
+				  .builder()
+				    .baseUrl(geoConfig.getBase_url())
+				  .build();
+	}
+
 	public CoordinatesResponse getCoordinates(CoordinatesRequest coordinatesRequest) throws EntityNotFoundException {
 		String address=coordinatesRequest.getHousNumber().concat("+")
 			       .concat(coordinatesRequest.getStreet()+"+")
 			       .concat(coordinatesRequest.getCity()+"+")
 			       .concat(coordinatesRequest.getCountry());
-		String region="il";
 		GoogleCoordinatesResults result=client.post()
-				.uri("/geocode/json?address={address}&key={key}&region={region}",address,key,region)
+				.uri(geoConfig.getGet_coordinates_url(),address,geoConfig.getKey(),geoConfig.getRegion())
 				.retrieve().bodyToMono(GoogleCoordinatesResults.class).block();	
 		checkStatus(result);
 		return new CoordinatesResponse(result);
 	}
 	
 	public boolean checkStatus(GoogleCoordinatesResults results)  throws EntityNotFoundException{
-		if (results.getResults().size()>1) 
+		if (results.getResults().size()>1) { 
+			log.debug(("Status= "+results.getStatus()+'\n'+"ambiguous result"));
 			throw new EntityNotFoundException("Status= "+results.getStatus()+'\n'+"ambiguous result");
-		switch (results.getStatus()){
-			case ("OK"):return true;
-			case("ZERO_RESULTS") :
-			  throw new EntityNotFoundException("Status= "+results.getStatus()+'\n'+results.getError_message());
-			default :throw new  BadRequestException("Status= "+results.getStatus()+'\n'+results.getError_message());
+		};
+		if (results.getStatus().equals("OK")) return true;
+		if (results.getStatus().equals("ZERO_RESULTS")) {
+			log.debug("Status= "+results.getStatus()+'\n'+results.getError_message());
+			throw new EntityNotFoundException("Status= "+results.getStatus()+'\n'+results.getError_message());
+		}
+		else {
+			log.debug("Status= "+results.getStatus()+'\n'+results.getError_message());
+			throw new  BadRequestException("Status= "+results.getStatus()+'\n'+results.getError_message());
 			}
-	}
+    }
 }
