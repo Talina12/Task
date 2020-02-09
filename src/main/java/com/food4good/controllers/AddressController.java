@@ -23,13 +23,8 @@ public class AddressController {
 	}
 	
 	@PostMapping (value="/validation")
-    public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody CoordinatesRequest coordinatesRequest1) throws ResponseStatusException
+    public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody CoordinatesRequest coordinatesRequest) throws ResponseStatusException
 	{
-		CoordinatesRequest coordinatesRequest=new CoordinatesRequest();
-		coordinatesRequest.setCity("Krasnodar");
-		coordinatesRequest.setCountry("Russia");
-		coordinatesRequest.setHousNumber("200");
-		coordinatesRequest.setStreet("Aerodromnaya");
 		CoordinatesResponse	result;
 		result = addressService.getCoordinates(coordinatesRequest);	
 		return(ResponseEntity.ok(result));
