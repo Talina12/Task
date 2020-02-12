@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GoogleDestinationResponse{
+public class GoogleDistanceResponse{
  
 	private String status;
-	private ArrayList<GeocodedWaypoints> geocoded_waypoints;
-	private ArrayList<Route> routes;
-	private String[] available_travel_modes;
+	private ArrayList<String> origin_addresses;
+	private ArrayList<String> destination_addresses;
+	private ArrayList<Row> rows;
 	private String error_message;
 }

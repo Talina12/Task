@@ -16,4 +16,7 @@ public class GeocodingConfig {
  private String base_url;
  private String get_coordinates_url;
  private String region;
+ private String get_destination_url;
+ private String mode;
+ private String language;
 }

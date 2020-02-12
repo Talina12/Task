@@ -51,7 +51,12 @@ geocoding:
   key: "AIzaSyC8vq02IetvzCNGAWAHIJIumg15D-NIh3c"
   base_url: "https://maps.googleapis.com/maps/api"
   get_coordinates_url: "/geocode/json?address={address}&key={googleKey}&region={region}"
+  get_destination_url: "/distancematrix/json?"
   region: "il"
+  mode: "walking"
+  language: "iw"
+  
+  
   
 
   

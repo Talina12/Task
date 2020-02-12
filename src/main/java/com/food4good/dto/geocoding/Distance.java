@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OverViewPolyline {
- private Point points;
+public class Distance {
+ private String value;
+ private String text;
 }
