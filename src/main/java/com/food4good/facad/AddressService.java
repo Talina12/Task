@@ -2,6 +2,9 @@ package com.food4good.facad;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.food4good.dto.DestinationRequest;
+import com.food4good.dto.geocoding.Distance;
+import com.food4good.dto.geocoding.GoogleDistanceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,11 +13,8 @@ import com.food4good.config.BadRequestException;
 import com.food4good.controllers.AddressController;
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
-import com.food4good.dto.DestinationRequest;
-import com.food4good.dto.geocoding.Distance;
-import com.food4good.dto.geocoding.GeocodingConfig;
+import com.food4good.config.GeocodingConfig;
 import com.food4good.dto.geocoding.GoogleCoordinatesResults;
-import com.food4good.dto.geocoding.GoogleDistanceResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +47,7 @@ public class AddressService {
 		return new CoordinatesResponse(result);
 	}
 	
-	public boolean checkStatus(GoogleCoordinatesResults results)  throws EntityNotFoundException,BadRequestException{
+	public boolean checkStatus(GoogleCoordinatesResults results)  throws EntityNotFoundException{
 		if (results.getResults().size()>1) { 
 			log.debug(("Status= "+results.getStatus()+'\n'+"ambiguous result"));
 			throw new EntityNotFoundException("Status= "+results.getStatus()+'\n'+"ambiguous result");
@@ -62,7 +62,7 @@ public class AddressService {
 			throw new  BadRequestException("Status= "+results.getStatus()+'\n'+results.getError_message());
 			}
     }
-	
+
 	public Distance getDestination(DestinationRequest destinationRequest) throws EntityNotFoundException,BadRequestException,Exception {
 		String origin= String.valueOf(destinationRequest.getMyPossition().getLatitude()).concat(",")
 				.concat(String.valueOf(destinationRequest.getMyPossition().getLongitude()));
@@ -75,7 +75,7 @@ public class AddressService {
 						,origin,destination,geoConfig.getKey(),geoConfig.getMode(),geoConfig.getLanguage())
 				.retrieve().bodyToMono(GoogleDistanceResponse.class).block();
 		checkDestinationResult(result);
-		return result.getRows().get(0).getElements().get(0).getDistance(); 
+		return result.getRows().get(0).getElements().get(0).getDistance();
 		}
 
 	private boolean checkDestinationResult(GoogleDistanceResponse result) {
@@ -94,6 +94,6 @@ public class AddressService {
 			log.debug("Status= "+result.getStatus()+'\n'+result.getError_message());
 			throw new  BadRequestException("Status= "+result.getStatus()+'\n'+result.getError_message());
 			}
-		
+
 	}
 }

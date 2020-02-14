@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("properties")
+@ConfigurationProperties("custom-properties")
 public class GlobalProperties {
     private int hoursBeforeClose;
 

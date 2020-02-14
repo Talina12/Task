@@ -1,5 +1,13 @@
-properties:
+custom-properties:
   hours-before-close: 3
+  geocoding:
+    key: "AIzaSyC8vq02IetvzCNGAWAHIJIumg15D-NIh3c"
+    base_url: "https://maps.googleapis.com/maps/api"
+    get_coordinates_url: "/geocode/json?address={address}&key={googleKey}&region={region}"
+    get_destination_url: "/distancematrix/json?"
+    region: "il"
+    mode: "walking"
+    language: "iw"
 server:
   servlet:
     context-path: /backend/
@@ -47,16 +55,6 @@ logging:
         descriptor:
           sql: ${LOG_LEVEL_DB:debug}
   register-shutdown-hook: true
-geocoding:
-  key: "AIzaSyC8vq02IetvzCNGAWAHIJIumg15D-NIh3c"
-  base_url: "https://maps.googleapis.com/maps/api"
-  get_coordinates_url: "/geocode/json?address={address}&key={googleKey}&region={region}"
-  get_destination_url: "/distancematrix/json?"
-  region: "il"
-  mode: "walking"
-  language: "iw"
-  
-  
   
 
   
