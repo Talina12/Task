@@ -35,11 +35,8 @@ public class AddressService {
 				  .build();
 	}
 
-	public CoordinatesResponse getCoordinates(CoordinatesRequest coordinatesRequest) throws EntityNotFoundException,BadRequestException {
-		String address=coordinatesRequest.getHousNumber().concat("+")
-			       .concat(coordinatesRequest.getStreet()+"+")
-			       .concat(coordinatesRequest.getCity()+"+")
-			       .concat(coordinatesRequest.getCountry());
+	public CoordinatesResponse getCoordinates(CoordinatesRequest coordinatesRequest) throws EntityNotFoundException {
+		String address=coordinatesRequest.getHousNumber()+"+"+coordinatesRequest.getStreet()+"+"+ coordinatesRequest.getCity()+"+"+coordinatesRequest.getCountry();
 		GoogleCoordinatesResults result=client.post()
 				.uri(geoConfig.getGet_coordinates_url(),address,geoConfig.getKey(),geoConfig.getRegion())
 				.retrieve().bodyToMono(GoogleCoordinatesResults.class).block();	
@@ -63,19 +60,16 @@ public class AddressService {
 			}
     }
 
-	public Distance getDestination(DestinationRequest destinationRequest) throws EntityNotFoundException,BadRequestException,Exception {
-		String origin= String.valueOf(destinationRequest.getMyPossition().getLatitude()).concat(",")
-				.concat(String.valueOf(destinationRequest.getMyPossition().getLongitude()));
-		String destination= supplierService.getById(destinationRequest.getSupplierId()).getLatetude()
-				.concat(",")
-		        .concat(supplierService.getById(destinationRequest.getSupplierId()).getLongtitude());
-		GoogleDistanceResponse result= client.post()
+	public String getDestination(DestinationRequest destinationRequest) throws Exception {
+		String origin=String.valueOf(destinationRequest.getMyPossition().getLatitude())+","+String.valueOf(destinationRequest.getMyPossition().getLongitude());
+	    String destination=supplierService.getById(destinationRequest.getSupplierId()).getLatetude()+","+supplierService.getById(destinationRequest.getSupplierId()).getLongtitude();
+	    GoogleDistanceResponse result= client.post()
 				// mode may be driving/walking/bicycling/transit
 				.uri(geoConfig.getGet_destination_url()+"origins={origin}&destinations={destination}&key={googleKey}&mode={mode}&language={language}"
 						,origin,destination,geoConfig.getKey(),geoConfig.getMode(),geoConfig.getLanguage())
 				.retrieve().bodyToMono(GoogleDistanceResponse.class).block();
 		checkDestinationResult(result);
-		return result.getRows().get(0).getElements().get(0).getDistance();
+		return result.getRows().get(0).getElements().get(0).getDistance().getText();
 		}
 
 	private boolean checkDestinationResult(GoogleDistanceResponse result) {
