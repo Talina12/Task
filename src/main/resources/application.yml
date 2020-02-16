@@ -8,6 +8,7 @@ custom-properties:
     region: "il"
     mode: "walking"
     language: "iw"
+    country: "Israel"
 server:
   servlet:
     context-path: /backend/

@@ -20,8 +20,8 @@ public class CoordinatesResponse {
 	public CoordinatesResponse(GoogleCoordinatesResults googleresult) throws EntityNotFoundException
 	{
 		if (googleresult.getResults().size()!=1) {
-			log.debug("Status= "+googleresult.getStatus()+'\n'+googleresult.getError_message());
-			throw new EntityNotFoundException("Status= "+googleresult.getStatus()+'\n'+googleresult.getError_message());
+			log.debug("Status= "+googleresult.getStatus()+'\n'+googleresult.getErrorMessage());
+			throw new EntityNotFoundException("Status= "+googleresult.getStatus()+'\n'+googleresult.getErrorMessage());
 		}
 		this.latitude=googleresult.getResults().get(0).getGeometry().getLocation().getLat();
 		this.longitude=googleresult.getResults().get(0).getGeometry().getLocation().getLng();}

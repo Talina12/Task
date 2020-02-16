@@ -1,6 +1,6 @@
 package com.food4good.dto;
 
-import java.util.ArrayList;
+import org.springframework.lang.NonNull;
 
 import lombok.Getter;
 import lombok.Setter;
