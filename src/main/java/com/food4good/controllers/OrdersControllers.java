@@ -4,6 +4,7 @@ package com.food4good.controllers;
 import com.food4good.database.entities.User;
 import com.food4good.dto.OrderDTO;
 import com.food4good.dto.OrderReportDTO;
+import com.food4good.dto.UpdateOrderRequest;
 import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
 import com.food4good.facad.OrderReport;
@@ -12,6 +13,7 @@ import com.food4good.facad.OrdersService;
 
 import com.food4good.facad.UsersService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,6 +69,14 @@ public class OrdersControllers {
         User user = usersService.getByToken(userToken);
         ordersService.setOrderStatus(orderId,user, OrderStatus.DELIVERED);
         return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping (value="/update")
+    public ResponseEntity<NewOrderResponse> updateOrder(@Validated @RequestBody @NonNull UpdateOrderRequest orderRequest) throws Exception {
+    	String userToken="123";
+    	User user = usersService.getByToken(userToken);
+    	return ResponseEntity.ok(ordersService.updateOrder(orderRequest, user));
+    	
     }
 
 }

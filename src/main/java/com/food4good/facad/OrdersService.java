@@ -12,7 +12,6 @@ import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.food4good.database.entities.OrderProducts;
@@ -23,7 +22,6 @@ import com.food4good.database.repositories.OrderProductsRepository;
 import com.food4good.database.repositories.OrdersRepository;
 import com.food4good.database.repositories.ProductsRepository;
 import com.food4good.database.repositories.UsersRepository;
-import org.springframework.web.client.HttpClientErrorException;
 
 
 @Service
@@ -74,6 +72,7 @@ public class OrdersService {
 		order.setStatus(status.getStatus());
 		ordersReppository.save(order);
 	}
+	
 	public void validateHoursRangeBeforeClose(Orders order)throws Exception{
 		Set<OrderProducts> orderProductsSet = order.getProducts();
 		for (OrderProducts orderProduct:orderProductsSet)
@@ -124,6 +123,21 @@ public class OrdersService {
 		 else newOrderProduct.setPrice(product.getMaxPrice());
 		 newOrderProduct.setProducts(product);
 		 return (orderProductsRepository.save(newOrderProduct));
+	}
+
+	public NewOrderResponse updateOrder(UpdateOrderRequest orderRequest, User user) throws Exception {
+	    Orders order = ordersReppository.findByIdAndUser(orderRequest.getOrderId(), user).orElseThrow(() -> new EntityNotFoundException("cannot find this order for user id"));
+		order.setComments(orderRequest.getComments());
+		order.setStatus(OrderStatus.NEW.getStatus());
+		deleteOrderProducts(order);
+		orderRequest.getProductsRows().forEach((p)->order.getProducts().add((createOrderProduct(p,order))));
+		order.setTotalPrice();
+		return new NewOrderResponse(ordersReppository.save(order));
+	}
+	
+	protected void deleteOrderProducts(Orders order) {
+		order.getProducts().stream().forEach((p)->orderProductsRepository.delete(p));
+		order.getProducts().clear();
 	}
 
 }

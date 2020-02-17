@@ -38,7 +38,7 @@ public class Orders extends AbstractEntity {
     private String comments;
 
     public Orders() {
-
+      
     }
     
     public void setProducts(Set<OrderProducts> products) {
@@ -51,5 +51,7 @@ public class Orders extends AbstractEntity {
     	this.totalPrice=String.valueOf(total);
     	return total;
     };
+    
+    
 }
 

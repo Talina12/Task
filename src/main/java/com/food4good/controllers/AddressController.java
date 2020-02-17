@@ -33,8 +33,9 @@ public class AddressController {
 	}
 	
 	@PostMapping (value="/destination")
-	public ResponseEntity<String> getDestination(@Validated @RequestBody @NonNull DestinationRequest destinationRequest) throws Exception{
-		String distance = addressService.getDestination(destinationRequest);
+    public ResponseEntity<String> getDestination(@Validated @RequestBody @NonNull DestinationRequest destinationRequest) throws Exception
+	{
+        String distance = addressService.getDestination(destinationRequest);
 		return ResponseEntity.ok(distance);
 	}
 	
