@@ -42,9 +42,13 @@ public class OrdersControllers {
     public List<OrderReportDTO> userById(@PathVariable("supplierId") Long supplierId) throws Exception {
         return orderReport.getById(supplierId);
     }
-    @GetMapping(value = "/user}", produces = APPLICATION_JSON_VALUE)
+    
+    @GetMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
     public List<OrderDTO> getOrdersOfUser() throws Exception {
-        return ordersService.geOrdersByUser();
+    	String userToken="123";
+    	User user = usersService.getByToken(userToken);
+    	return (ordersService).getOrdersByUser(user);
+    //	return null;
     }
     
     @PostMapping (value="/init")

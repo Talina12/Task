@@ -62,8 +62,11 @@ public class OrdersService {
 	newOrder =ordersReppository.save(newOrder);
 	return new NewOrderResponse(newOrder);
  }
-	public List<OrderDTO> geOrdersByUser() {
-		return null;
+	public List<OrderDTO> getOrdersByUser(User user ) {
+		List<Orders> orders= ordersReppository.findAllByUser(user);
+		ArrayList<OrderDTO> ordersDto= new ArrayList<OrderDTO>();
+		orders.forEach((o)->ordersDto.add(OrderDTO.convertFromEntity(o)));
+		return ordersDto;
 	}
 
 	public void setOrderStatus(long orderId,User user,OrderStatus status)throws Exception {
