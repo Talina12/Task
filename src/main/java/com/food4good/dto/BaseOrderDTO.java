@@ -10,26 +10,24 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderReportDTO extends BaseDTO{
-	
-	private String suplierName;
+public class BaseOrderDTO  extends BaseDTO{
+	private String supplierName;
 	private long numOfProducts;
 	private String totalPrice;
-	private long userId;
-	private String comments;
+	private String status;
 	
-	public static OrderReportDTO convertFromEntity(Orders order) {
-		OrderReportDTO orderDto= new OrderReportDTO();
-		orderDto.setComments(order.getComments());
+	public static BaseOrderDTO convertFromEntity(Orders order) {
+		BaseOrderDTO orderDto = new BaseOrderDTO();
 		orderDto.setCreatedAt(order.getCreatedAt().toString());
 		orderDto.setId(order.getId());
 		orderDto.setNumOfProducts(order.getProducts().stream().count());
+		orderDto.setStatus(order.getStatus());
 		Supplier supplier = order.getProducts().stream().findFirst().orElseThrow(() -> new EntityNotFoundException("there are no products in the order"))
 				.getProducts().getSupplier();
-		orderDto.setSuplierName(supplier.getName());
+		orderDto.setSupplierName(supplier.getName());
 		orderDto.setTotalPrice(order.getTotalPrice());
 		orderDto.setUpdatedAt(order.getUpdatedAt().toString());
-		orderDto.setUserId(order.getUser().getId());
 		return orderDto;
 		}
+
 }

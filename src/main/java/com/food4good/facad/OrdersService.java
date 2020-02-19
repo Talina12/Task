@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import com.food4good.database.entities.OrderProducts;
 import com.food4good.database.entities.Orders;
 import com.food4good.database.entities.Products;
+import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.OrderProductsRepository;
 import com.food4good.database.repositories.OrdersRepository;
 import com.food4good.database.repositories.ProductsRepository;
+import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
 
 
@@ -31,20 +33,24 @@ public class OrdersService {
  UsersRepository usersRepository;
  ProductsRepository productsRepository;
  OrderProductsRepository orderProductsRepository;
+ private SupplierRepository supplierRepository;
  private final int hoursBeforeClose;
 
  @Autowired
  public OrdersService(OrdersRepository ordersReppository, UsersRepository usersRepository,
-					  ProductsRepository productsRepository, OrderProductsRepository orderProductsRepository,GlobalProperties globalProperties) {
+					  ProductsRepository productsRepository, OrderProductsRepository orderProductsRepository,
+					  SupplierRepository supplierRepository,GlobalProperties globalProperties) {
 	 this.ordersReppository= ordersReppository;
 	 this.usersRepository=usersRepository;
 	 this.productsRepository= productsRepository;
 	 this.orderProductsRepository=orderProductsRepository;
+	 this.supplierRepository=supplierRepository;
 	 this.hoursBeforeClose = globalProperties.getHoursBeforeClose();
  }
  
  public NewOrderResponse addOrder(NewOrderRequest orderRequest, User user) throws Exception  {
 	Orders newOrder= new Orders();
+	Supplier supplier = supplierRepository.findById(orderRequest.getSupplier_id()).orElseThrow(() -> new EntityNotFoundException("supplier not found"));
 	newOrder.setUser(user);
 	newOrder.setComments(orderRequest.getComments());
 	newOrder.setStatus(OrderStatus.NEW.getStatus());
@@ -53,11 +59,10 @@ public class OrdersService {
 	HashSet<OrderProducts> productSet  = new HashSet<OrderProducts>();
 	 List<NewOrderProductRequest> productsRows = orderRequest.getProductsRows();
 	 for (NewOrderProductRequest row: productsRows) {
-      productSet.add(createOrderProduct(row,newOrder));
+      productSet.add(createOrderProduct(row,newOrder, supplier.getId() ));
 	 }
 	
 	newOrder.setProducts(productSet);
-	
 	newOrder.setTotalPrice();
 	newOrder =ordersReppository.save(newOrder);
 	return new NewOrderResponse(newOrder);
@@ -117,8 +122,9 @@ public class OrdersService {
 	}
 
 
-	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder) {
+	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder, long supplierId) throws Exception {
 		Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
+		if(product.getSupplier().getId()!=supplierId) throw new Exception("the product does not belong to the suppplier");
 		OrderProducts newOrderProduct= new OrderProducts();
 		 newOrderProduct.setAmount(row.getProductAmount());
 		 newOrderProduct.setOrders(newOrder);
@@ -130,10 +136,12 @@ public class OrdersService {
 
 	public NewOrderResponse updateOrder(UpdateOrderRequest orderRequest, User user) throws Exception {
 	    Orders order = ordersReppository.findByIdAndUser(orderRequest.getOrderId(), user).orElseThrow(() -> new EntityNotFoundException("cannot find this order for user id"));
-		order.setComments(orderRequest.getComments());
+	    Supplier supplier = supplierRepository.findById(orderRequest.getSupplierId()).orElseThrow(() -> new EntityNotFoundException("supplier not found"));
+	    order.setComments(orderRequest.getComments());
 		order.setStatus(OrderStatus.NEW.getStatus());
 		deleteOrderProducts(order);
-		orderRequest.getProductsRows().forEach((p)->order.getProducts().add((createOrderProduct(p,order))));
+		for (NewOrderProductRequest row: orderRequest.getProductsRows())
+			order.getProducts().add(createOrderProduct(row,order,supplier.getId()));
 		order.setTotalPrice();
 		return new NewOrderResponse(ordersReppository.save(order));
 	}

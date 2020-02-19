@@ -45,10 +45,9 @@ public class OrdersControllers {
     
     @GetMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
     public List<OrderDTO> getOrdersOfUser() throws Exception {
-    	String userToken="123";
+    	String userToken="456";
     	User user = usersService.getByToken(userToken);
-    	return (ordersService).getOrdersByUser(user);
-    //	return null;
+    	return ordersService.getOrdersByUser(user);
     }
     
     @PostMapping (value="/init")
