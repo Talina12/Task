@@ -3,6 +3,7 @@ package com.food4good.controllers;
 
 import com.food4good.database.entities.User;
 import com.food4good.dto.OrderDTO;
+import com.food4good.dto.OrderInfo;
 import com.food4good.dto.OrderReportDTO;
 import com.food4good.dto.UpdateOrderRequest;
 import com.food4good.dto.NewOrderRequest;
@@ -81,6 +82,11 @@ public class OrdersControllers {
     	return ResponseEntity.ok(ordersService.updateOrder(orderRequest, user));
     	
     }
+    
+    @GetMapping("/all")
+    public ResponseEntity<List<OrderInfo>> getAllOrders(){
+    	return ResponseEntity.ok(ordersService.getAll());
+    	}
 
 }
 

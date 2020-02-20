@@ -151,5 +151,11 @@ public class OrdersService {
 		order.getProducts().clear();
 	}
 
+	public List<OrderInfo> getAll() {
+		ArrayList<OrderInfo> ordersInfo = new ArrayList<OrderInfo>();
+		ordersReppository.findAll().forEach((o)->ordersInfo.add(OrderInfo.convertFromEntity(o)));
+		return ordersInfo;
+	}
+
 }
 

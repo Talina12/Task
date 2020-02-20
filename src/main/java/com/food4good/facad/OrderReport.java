@@ -4,11 +4,16 @@ import com.food4good.database.entities.Orders;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.repositories.OrdersRepository;
 import com.food4good.dto.OrderReportDTO;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 public class OrderReport {
     private OrdersRepository ordersReppository;
@@ -28,6 +33,8 @@ public class OrderReport {
     public Supplier getSuplier(Orders order) {
 		if (order.getProducts().stream().findFirst().isPresent())
 			return order.getProducts().stream().findFirst().get().getProducts().getSupplier();
-		else return null;
+		else {log.debug("order without products found");
+		      return null;
+		}
 		}
 }
