@@ -23,7 +23,7 @@ public class OrderReportDTO extends BaseDTO{
 		orderDto.setComments(order.getComments());
 		orderDto.setCreatedAt(order.getCreatedAt().toString());
 		orderDto.setId(order.getId());
-		orderDto.setNumOfProducts(order.getProducts().stream().count());
+		orderDto.setNumOfProducts(order.getProducts().size());
 		Supplier supplier = order.getProducts().stream().findFirst().orElseThrow(() -> new EntityNotFoundException("there are no products in the order"))
 				.getProducts().getSupplier();
 		orderDto.setSuplierName(supplier.getName());

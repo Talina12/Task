@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class NewOrderRequest {
  
-	private long supplier_id;
+	private long supplierId;
 	private ArrayList<NewOrderProductRequest> productsRows;
 	private String comments;
  

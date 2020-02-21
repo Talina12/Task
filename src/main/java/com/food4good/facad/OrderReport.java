@@ -1,9 +1,11 @@
 package com.food4good.facad;
 
+import com.food4good.database.entities.OrderProducts;
 import com.food4good.database.entities.Orders;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.repositories.OrdersRepository;
 import com.food4good.dto.OrderReportDTO;
+import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +33,9 @@ public class OrderReport {
     }
     
     public Supplier getSuplier(Orders order) {
-		if (order.getProducts().stream().findFirst().isPresent())
-			return order.getProducts().stream().findFirst().get().getProducts().getSupplier();
+		java.util.Optional<OrderProducts> orderProduct = order.getProducts().stream().findFirst();
+    	if (orderProduct.isPresent())
+			return orderProduct.get().getProducts().getSupplier();
 		else {log.debug("order without products found");
 		      return null;
 		}

@@ -21,7 +21,7 @@ public class OrderInfo extends BaseDTO{
 		OrderInfo orderInfo = new OrderInfo();
 		orderInfo.setCreatedAt(order.getCreatedAt().toString());
 		orderInfo.setId(order.getId());
-		orderInfo.setNumOfProducts(order.getProducts().stream().count());
+		orderInfo.setNumOfProducts(order.getProducts().size());
 		orderInfo.setStatus(order.getStatus());
 		orderInfo.setSupplierName(order.getProducts().stream().findFirst().orElseThrow(() -> new EntityNotFoundException("there are no products in the order"))
 				.getProducts().getSupplier().getName());

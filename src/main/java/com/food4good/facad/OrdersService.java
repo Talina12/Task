@@ -50,7 +50,7 @@ public class OrdersService {
  
  public NewOrderResponse addOrder(NewOrderRequest orderRequest, User user) throws Exception  {
 	Orders newOrder= new Orders();
-	Supplier supplier = supplierRepository.findById(orderRequest.getSupplier_id()).orElseThrow(() -> new EntityNotFoundException("supplier not found"));
+	Supplier supplier = supplierRepository.findById(orderRequest.getSupplierId()).orElseThrow(() -> new EntityNotFoundException("supplier not found"));
 	newOrder.setUser(user);
 	newOrder.setComments(orderRequest.getComments());
 	newOrder.setStatus(OrderStatus.NEW.getStatus());

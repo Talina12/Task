@@ -21,7 +21,7 @@ public class OrderDTO extends BaseDTO{
 		OrderDTO orderDto = new OrderDTO();
 		orderDto.setCreatedAt(order.getCreatedAt().toString());
 		orderDto.setId(order.getId());
-		orderDto.setNumOfProducts(order.getProducts().stream().count());
+		orderDto.setNumOfProducts(order.getProducts().size());
 		orderDto.setStatus(order.getStatus());
 		Supplier supplier = order.getProducts().stream().findFirst().orElseThrow(() -> new EntityNotFoundException("there are no products in the order"))
 				.getProducts().getSupplier();
