@@ -4,9 +4,7 @@ import com.food4good.database.entities.OrderProducts;
 import com.food4good.database.entities.Orders;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.repositories.OrdersRepository;
-import com.food4good.dto.OrderReportDTO;
-import com.google.common.base.Optional;
-
+import com.food4good.dto.OrderDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -24,12 +22,12 @@ public class OrderReport {
     	this.ordersReppository=ordersReppository;
     	}
 	
-    public List<OrderReportDTO> getById(Long supplierId) {
-        ArrayList <OrderReportDTO> ordersDto = new ArrayList <OrderReportDTO>();
+    public List<OrderDTO> getById(Long supplierId) {
+        ArrayList <OrderDTO> ordersResult = new ArrayList <OrderDTO>();
     	List<Orders> selectedOrders= ordersReppository.findAll().stream()
     	                 .filter((o)->getSuplier(o)!=null && getSuplier(o).getId()==supplierId).collect(Collectors.toList());
-        selectedOrders.forEach((o)->ordersDto.add(OrderReportDTO.convertFromEntity(o)));
-    	return ordersDto;
+        selectedOrders.forEach((o)->ordersResult.add(OrderDTO.convertFromEntity(o)));
+    	return ordersResult;
     }
     
     public Supplier getSuplier(Orders order) {

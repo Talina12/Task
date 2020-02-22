@@ -16,6 +16,7 @@ public class OrderDTO extends BaseDTO{
 	private long numOfProducts;
 	private String totalPrice;
 	private String status;
+	private long userId;
 	
 	public static OrderDTO convertFromEntity(Orders order) {
 		OrderDTO orderDto = new OrderDTO();
@@ -29,6 +30,7 @@ public class OrderDTO extends BaseDTO{
 		orderDto.setSupplierName(supplier.getName());
 		orderDto.setTotalPrice(order.getTotalPrice());
 		orderDto.setUpdatedAt(order.getUpdatedAt().toString());
+		orderDto.setUserId(order.getUser().getId());
 		return orderDto;
 		}
 }

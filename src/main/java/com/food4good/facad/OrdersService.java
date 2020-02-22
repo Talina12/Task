@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -151,11 +152,15 @@ public class OrdersService {
 		order.getProducts().clear();
 	}
 
-	public List<OrderInfo> getAll() {
-		ArrayList<OrderInfo> ordersInfo = new ArrayList<OrderInfo>();
-		ordersReppository.findAll().forEach((o)->ordersInfo.add(OrderInfo.convertFromEntity(o)));
+	public List<OrderDTO> getAll() {
+		ArrayList<OrderDTO> ordersInfo = new ArrayList<OrderDTO>();
+		ordersReppository.findAll().forEach((o)->ordersInfo.add(OrderDTO.convertFromEntity(o)));
 		return ordersInfo;
 	}
+	
+	public Long getUndelivered(User user) {
+		return ordersReppository.findAllByUser(user).stream().filter((o)->o.getStatus().equals(OrderStatus.NEW.getStatus())).count();
+		}
 
 }
 

@@ -3,8 +3,6 @@ package com.food4good.controllers;
 
 import com.food4good.database.entities.User;
 import com.food4good.dto.OrderDTO;
-import com.food4good.dto.OrderInfo;
-import com.food4good.dto.OrderReportDTO;
 import com.food4good.dto.UpdateOrderRequest;
 import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
@@ -40,7 +38,7 @@ public class OrdersControllers {
     }
 
     @GetMapping(value = "/{supplierId}", produces = APPLICATION_JSON_VALUE)
-    public List<OrderReportDTO> userById(@PathVariable("supplierId") Long supplierId) throws Exception {
+    public List<OrderDTO> userById(@PathVariable("supplierId") Long supplierId) throws Exception {
         return orderReport.getById(supplierId);
     }
     
@@ -84,9 +82,15 @@ public class OrdersControllers {
     }
     
     @GetMapping("/all")
-    public ResponseEntity<List<OrderInfo>> getAllOrders(){
+    public ResponseEntity<List<OrderDTO>> getAllOrders(){
     	return ResponseEntity.ok(ordersService.getAll());
     	}
 
+    @GetMapping("/undelivered")
+    public ResponseEntity<Long> getUndeliveredOrders() throws Exception{
+    	String userToken="123";
+    	User user = usersService.getByToken(userToken);
+    	return ResponseEntity.ok(ordersService.getUndelivered(user));
+    }
 }
 
