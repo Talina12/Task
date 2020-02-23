@@ -1,5 +1,7 @@
 		package com.food4good.facad;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.persistence.EntityNotFoundException;
 
 import com.food4good.dto.DestinationRequest;
@@ -11,6 +13,9 @@ import com.food4good.config.BadRequestException;
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
 import com.food4good.config.GeocodingConfig;
+import com.food4good.database.entities.Supplier;
+import com.food4good.database.repositories.SupplierRepository;
+import com.food4good.dto.geocoding.Element;
 import com.food4good.dto.geocoding.GoogleCoordinatesResults;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 public class AddressService {
 
 	private GeocodingConfig geoConfig;
-	private SupplierService supplierService;
+	private SupplierRepository supplierRepository;
 	private WebClient client; 
 	
-	public AddressService(GeocodingConfig geoConfig, SupplierService supplierService) {
-		this.supplierService=supplierService;
+	public AddressService(GeocodingConfig geoConfig, SupplierRepository supplierRepository) {
+		this.supplierRepository=supplierRepository;
 		this.geoConfig= geoConfig;
 		client = WebClient
 				  .builder()
@@ -62,44 +67,61 @@ public class AddressService {
 			}
     }
 
-	public String getDestination(DestinationRequest destinationRequest) throws Exception {
+	public HashMap<Long,String> getDestination(DestinationRequest destinationRequest) throws Exception {
+		int numOfsulppiers=destinationRequest.getSupplierId().size();
+		if ( numOfsulppiers<1) throw new Exception("no supliers in the request");
 		StringBuilder origin = new StringBuilder(23);
 		origin.append(String.valueOf(destinationRequest.getMyPossition().getLatitude())).append(",").append(String.valueOf(destinationRequest.getMyPossition().getLongitude()));
-		StringBuilder destination = new StringBuilder(23);
-		destination.append(supplierService.getById(destinationRequest.getSupplierId()).getLatetude()).append(",").append(supplierService.getById(destinationRequest.getSupplierId()).getLongtitude());
+		StringBuilder destination = new StringBuilder(23*numOfsulppiers);
+		for (long supplierId:destinationRequest.getSupplierId()) destination.append(buildDestinationString(supplierId).append("|"));
 		GoogleDistanceResponse result= client.post()
 				// mode may be driving/walking/bicycling/transit
 				.uri(geoConfig.getGetDestinationUrl()+"origins={origin}&destinations={destination}&key={googleKey}&mode={mode}&language={language}"
 						,origin,destination,geoConfig.getKey(),geoConfig.getMode(),geoConfig.getLanguage())
 				.retrieve().bodyToMono(GoogleDistanceResponse.class).block();
-		checkDestinationResult(result);
-		return result.getRows().get(0).getElements().get(0).getDistance().getText();
+		checkTopLevelResult(result);
+		return parseDestinationResult(result,destinationRequest.getSupplierId());
+		
+		//return result.getRows().get(0).getElements().get(0).getDistance().getText();
 		}
 
-	private boolean checkDestinationResult(GoogleDistanceResponse result) {
+	private boolean checkTopLevelResult(GoogleDistanceResponse result) {
 		if (result.getRows().size()==0) {
 			log.debug("Status= "+result.getStatus()+'\n'+"failed to calculate route");
-		    throw new EntityNotFoundException("Status= "+result.getStatus()+'\n'+result.getErrorMessage());}
-		if (!result.getRows().get(0).getElements().get(0).getStatus().equals("OK")) {
-			log.debug("Top-level status = "+result.getStatus()+'\n'+"Element-level Status= "+result.getRows().get(0).getElements().get(0).getStatus()+'\n'
-					+"failed to calculate route");
-		    throw new EntityNotFoundException("Status= "+result.getStatus()+'\n'+result.getErrorMessage());}
+		    throw new EntityNotFoundException("Status= "+result.getStatus()+'\n'+result.getErrorMessage());
+		    }
 		if (result.getStatus().equals("OK")) return true;
 		if (result.getStatus().equals("ZERO_RESULTS")) {
 			log.debug("Status= "+result.getStatus()+'\n'+result.getErrorMessage());
 			throw new EntityNotFoundException("Status= "+result.getStatus()+'\n'+result.getErrorMessage());
-		}
+		   }
 		else {
 			log.debug("Status= "+result.getStatus()+'\n'+result.getErrorMessage());
 			throw new  BadRequestException("Status= "+result.getStatus()+'\n'+result.getErrorMessage());
 			}
-
-	}
+       }
 	
 	private void checkAddress(CoordinatesRequest coordinatesRequest) {
 		if (coordinatesRequest.getCity()==null) coordinatesRequest.setCity("");
 		if (coordinatesRequest.getCountry()==null) coordinatesRequest.setCountry(geoConfig.getCountry());
 		if (coordinatesRequest.getHousNumber()==null) coordinatesRequest.setHousNumber("");
 		if (coordinatesRequest.getStreet()==null) coordinatesRequest.setStreet("");
+	}
+	
+	private StringBuilder  buildDestinationString(long supplierId) throws Exception {
+		StringBuilder des = new StringBuilder(23);
+		Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new Exception("supplier not found"));
+		des.append(supplier.getLatetude()).append(",").append(supplier.getLongtitude());
+		return des;
+	}
+	
+	private HashMap<Long, String> parseDestinationResult(GoogleDistanceResponse result,ArrayList<Long> suppliersId) {
+		ArrayList<Element> elements = result.getRows().get(0).getElements();
+		HashMap<Long, String> distanceMap = new HashMap<Long, String>(elements.size());
+		for (int i=0;i<elements.size();i++)
+			if (elements.get(i).getStatus().equals("OK"))
+				distanceMap.put(suppliersId.get(i), elements.get(i).getDistance().getText());
+			else distanceMap.put(suppliersId.get(i), "");
+	    return distanceMap;
 	}
 }

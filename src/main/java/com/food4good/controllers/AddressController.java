@@ -1,5 +1,8 @@
 package com.food4good.controllers;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
+import com.food4good.dto.Destination;
 import com.food4good.dto.DestinationRequest;
 import com.food4good.facad.AddressService;
 
@@ -33,10 +37,9 @@ public class AddressController {
 	}
 	
 	@PostMapping (value="/destination")
-    public ResponseEntity<String> getDestination(@Validated @RequestBody @NonNull DestinationRequest destinationRequest) throws Exception
+    public ResponseEntity<HashMap<Long,String>> getDestination(@Validated @RequestBody @NonNull DestinationRequest destinationRequest) throws Exception
 	{
-        String distance = addressService.getDestination(destinationRequest);
-		return ResponseEntity.ok(distance);
+        return ResponseEntity.ok(addressService.getDestination(destinationRequest));
 	}
 	
 
