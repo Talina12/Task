@@ -9,6 +9,7 @@ custom-properties:
     mode: "walking"
     language: "iw"
     country: "Israel"
+  max_num_of_dishes: 20  
 server:
   servlet:
     context-path: /backend/

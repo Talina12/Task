@@ -5,6 +5,8 @@ package com.food4good.controllers;
 import com.food4good.database.entities.User;
 import com.food4good.dto.SupplierDTO;
 import com.food4good.dto.SupplierInfoDTO;
+import com.food4good.dto.geocoding.GeoPoint;
+import com.food4good.dto.SupplierByUserDTO;
 import com.food4good.facad.SupplierService;
 import com.food4good.facad.UsersService;
 
@@ -56,4 +58,11 @@ public class SuppliersController {
     	int finalRate=supplierService.deleteSupplierRate(supplierId,user.getId());
         return ResponseEntity.ok(finalRate);
     }
+    
+    @GetMapping("/forUser")
+    public ResponseEntity<List<SupplierByUserDTO>> getAllSupliersInfo(@Validated @RequestBody GeoPoint myPossition) throws Exception {
+    	String userToken="123";
+    	User user = usersService.getByToken(userToken);
+    	return ResponseEntity.ok(supplierService.getAllInfo(user, myPossition));
+	}
 }

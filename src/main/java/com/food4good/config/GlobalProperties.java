@@ -3,16 +3,19 @@ package com.food4good.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Component
 @ConfigurationProperties("custom-properties")
 public class GlobalProperties {
     private int hoursBeforeClose;
-
-    public void setHoursBeforeClose(int hoursBeforeClose) {
-        this.hoursBeforeClose = hoursBeforeClose;
-    }
-
-    public int getHoursBeforeClose() {
-        return hoursBeforeClose;
-    }
+    
+    @JsonProperty("max_num_of_dishes")
+    private int maxNumOfDishes;
+    
 }
