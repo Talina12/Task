@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
 import com.food4good.dto.DestinationRequest;
+import com.food4good.dto.SingleDestinationRequest;
 import com.food4good.dto.geocoding.GeoPoint;
 import com.food4good.facad.AddressService;
 
@@ -41,4 +42,8 @@ public class AddressController {
         return ResponseEntity.ok(addressService.getDestination(destinationRequest));
 	}
 
+	@PostMapping (value="/single_destination")
+	public ResponseEntity<String> getDestination(@Validated @RequestBody @NonNull SingleDestinationRequest singleDestinationRequest) throws Exception{
+		return ResponseEntity.ok(addressService.getDestination(singleDestinationRequest));
+	}
 }

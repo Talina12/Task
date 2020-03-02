@@ -23,4 +23,10 @@ public class DestinationRequest {
 		this.supplierId = new ArrayList<Long>(suppliersId);
 		this.myPossition = possition;
 	}
+
+public DestinationRequest(SingleDestinationRequest singleDestinationRequest) {
+	this.supplierId = new ArrayList<Long>();
+	this.supplierId.add(singleDestinationRequest.getSupplierId());
+	this.myPossition = singleDestinationRequest.getMyPossition();
+}
 }

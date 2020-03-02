@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javax.persistence.EntityNotFoundException;
 
 import com.food4good.dto.DestinationRequest;
+import com.food4good.dto.SingleDestinationRequest;
 import com.food4good.dto.geocoding.GoogleDistanceResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -132,6 +133,11 @@ public class AddressService {
 		StringBuilder destination = new StringBuilder(23*numOfsulppiers);
 		for (long supplierId:suppliersId) destination.append(buildSingleDestinationString(supplierId).append("|"));
 		return destination;
+	}
+
+	public String getDestination(SingleDestinationRequest singleDestinationRequest) throws Exception {
+		HashMap<Long, String> distances = this.getDestination(new DestinationRequest(singleDestinationRequest));
+		return distances.get(singleDestinationRequest.getSupplierId());
 	}
 	}
 
