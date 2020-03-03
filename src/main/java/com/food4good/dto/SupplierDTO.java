@@ -1,5 +1,6 @@
 package com.food4good.dto;
 
+import com.food4good.config.GlobalProperties;
 import com.food4good.database.entities.Supplier;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +17,9 @@ public class SupplierDTO extends BaseDTO{
     private String logoImage;
     private String longtitude;
     private String latetude;
-
-
-
+    private String rates;
+    private String displayOrder;
+    
     public static SupplierDTO convertFromEntity(Supplier supplier) {
         SupplierDTO supplierDTO = new SupplierDTO();
         supplierDTO.setAddress(supplier.getAddress());
@@ -28,6 +29,8 @@ public class SupplierDTO extends BaseDTO{
         supplierDTO.setLongtitude(supplier.getLongtitude());
         supplierDTO.setOpenHours(supplier.getOpenHours());
         supplierDTO.setSupplierName(supplier.getName());
+        supplierDTO.setRates(supplier.getRates());
+        supplierDTO.setDisplayOrder(supplier.getDisplayOrder());
         return supplierDTO;
     }
 }

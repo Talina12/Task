@@ -1,6 +1,7 @@
 package com.food4good.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.lang.NonNull;
 
@@ -12,9 +13,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DestinationRequest {
- @NonNull
+ 
+@NonNull
  private ArrayList<Long> supplierId;
  @NonNull
  private GeoPoint myPossition;
-	
+ 
+ public DestinationRequest(GeoPoint possition, ArrayList<Long> suppliersId) {
+		this.supplierId = new ArrayList<Long>(suppliersId);
+		this.myPossition = possition;
+	}
+
+public DestinationRequest(SingleDestinationRequest singleDestinationRequest) {
+	this.supplierId = new ArrayList<Long>();
+	this.supplierId.add(singleDestinationRequest.getSupplierId());
+	this.myPossition = singleDestinationRequest.getMyPossition();
+}
 }

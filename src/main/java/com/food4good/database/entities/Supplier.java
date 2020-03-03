@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.Formula;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +37,7 @@ public class Supplier extends  AbstractEntity{
     private String latetude;
 
     @Column
+   // @Formula(value= " (  select count (*) from \"supplierRate\"   WHERE supplier_id=id)")
     private String rates;
 
     @Column(name="display_order")
@@ -44,7 +48,7 @@ public class Supplier extends  AbstractEntity{
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SupplierFilters> filters = new HashSet<>();
-
+    
     public Supplier() {
     }
 }

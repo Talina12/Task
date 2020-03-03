@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javax.persistence.EntityNotFoundException;
 
 import com.food4good.dto.DestinationRequest;
+import com.food4good.dto.SingleDestinationRequest;
 import com.food4good.dto.geocoding.GoogleDistanceResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,6 +17,7 @@ import com.food4good.config.GeocodingConfig;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.dto.geocoding.Element;
+import com.food4good.dto.geocoding.GeoPoint;
 import com.food4good.dto.geocoding.GoogleCoordinatesResults;
 
 import lombok.extern.slf4j.Slf4j;
@@ -68,21 +70,15 @@ public class AddressService {
     }
 
 	public HashMap<Long,String> getDestination(DestinationRequest destinationRequest) throws Exception {
-		int numOfsulppiers=destinationRequest.getSupplierId().size();
-		if ( numOfsulppiers<1) throw new Exception("no supliers in the request");
-		StringBuilder origin = new StringBuilder(23);
-		origin.append(String.valueOf(destinationRequest.getMyPossition().getLatitude())).append(",").append(String.valueOf(destinationRequest.getMyPossition().getLongitude()));
-		StringBuilder destination = new StringBuilder(23*numOfsulppiers);
-		for (long supplierId:destinationRequest.getSupplierId()) destination.append(buildDestinationString(supplierId).append("|"));
-		GoogleDistanceResponse result= client.post()
+		StringBuilder origin = buildOrigin(destinationRequest.getMyPossition());
+		StringBuilder destination = buildDestinations(destinationRequest.getSupplierId());
+				GoogleDistanceResponse result= client.post()
 				// mode may be driving/walking/bicycling/transit
 				.uri(geoConfig.getGetDestinationUrl()+"origins={origin}&destinations={destination}&key={googleKey}&mode={mode}&language={language}"
 						,origin,destination,geoConfig.getKey(),geoConfig.getMode(),geoConfig.getLanguage())
 				.retrieve().bodyToMono(GoogleDistanceResponse.class).block();
 		checkTopLevelResult(result);
 		return parseDestinationResult(result,destinationRequest.getSupplierId());
-		
-		//return result.getRows().get(0).getElements().get(0).getDistance().getText();
 		}
 
 	private boolean checkTopLevelResult(GoogleDistanceResponse result) {
@@ -108,7 +104,7 @@ public class AddressService {
 		if (coordinatesRequest.getStreet()==null) coordinatesRequest.setStreet("");
 	}
 	
-	private StringBuilder  buildDestinationString(long supplierId) throws Exception {
+	private StringBuilder  buildSingleDestinationString(long supplierId) throws Exception {
 		StringBuilder des = new StringBuilder(23);
 		Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new Exception("supplier not found"));
 		des.append(supplier.getLatetude()).append(",").append(supplier.getLongtitude());
@@ -124,4 +120,24 @@ public class AddressService {
 			else distanceMap.put(suppliersId.get(i), "");
 	    return distanceMap;
 	}
-}
+	
+	private StringBuilder buildOrigin(GeoPoint myPossition) {
+		StringBuilder origin = new StringBuilder(23);
+		origin.append(String.valueOf(myPossition.getLatitude())).append(",").append(String.valueOf(myPossition.getLongitude()));
+		return origin;
+		}
+	
+	private StringBuilder buildDestinations(ArrayList<Long> suppliersId) throws Exception {
+		int numOfsulppiers=suppliersId.size();
+		if ( numOfsulppiers<1) throw new Exception("no supliers in the request");
+		StringBuilder destination = new StringBuilder(23*numOfsulppiers);
+		for (long supplierId:suppliersId) destination.append(buildSingleDestinationString(supplierId).append("|"));
+		return destination;
+	}
+
+	public String getDestination(SingleDestinationRequest singleDestinationRequest) throws Exception {
+		HashMap<Long, String> distances = this.getDestination(new DestinationRequest(singleDestinationRequest));
+		return distances.get(singleDestinationRequest.getSupplierId());
+	}
+	}
+

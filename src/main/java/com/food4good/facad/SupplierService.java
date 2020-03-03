@@ -7,11 +7,19 @@ import com.food4good.database.entities.User;
 import com.food4good.database.repositories.SupplierRateRepository;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
+import com.food4good.dto.DestinationRequest;
+import com.food4good.dto.SupplierByUserDTO;
 import com.food4good.dto.SupplierDTO;
 import com.food4good.dto.SupplierInfoDTO;
+import com.food4good.dto.geocoding.GeoPoint;
+import com.food4good.facad.SupplierByUser;
+
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,11 +29,13 @@ public class SupplierService {
     SupplierRepository supplierRepository;
     SupplierRateRepository supplierRateRepository;
     UsersRepository usersRepository;
+    AddressService addressService;
 
-    public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, UsersRepository usersRepository) {
+    public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, UsersRepository usersRepository, AddressService addressService) {
         this.supplierRepository = supplierRepository;
         this.usersRepository = usersRepository;
         this.supplierRateRepository = suppliersRateRepository;
+        this.addressService = addressService;
     }
 
     public SupplierDTO getById(Long supplierId) throws Exception {
@@ -78,6 +88,28 @@ public class SupplierService {
         supplierRepository.save(supplier);
         return finalSupplierRate;
     }
+
+	public List<SupplierByUserDTO> getAllInfo(User user, GeoPoint possition) throws Exception {
+		List<Supplier> allSuppliers = supplierRepository.findAll();
+		ArrayList <SupplierByUser> suppliersByUser = new ArrayList <SupplierByUser>();
+		allSuppliers.forEach(s->suppliersByUser.add(new SupplierByUser(s)));
+		if (possition != null)   setSupliersDistance(suppliersByUser,possition);
+		suppliersByUser.forEach(s->s.setFavorite(isFavorite(user,s.getSupplier())));
+		return suppliersByUser.stream().map(SupplierByUserDTO::convertFromEntity).collect(Collectors.toList());
+	}
     
-   
+    public boolean isFavorite(User user, Supplier supplier) {
+    	if (supplierRateRepository.findByUserAndSupplier(user, supplier).isPresent())
+    		return true;
+    	else
+    	    return false;
+		}
+    
+    public ArrayList<SupplierByUser> setSupliersDistance(ArrayList<SupplierByUser> suppliersByUser, GeoPoint possition) throws Exception{
+    	ArrayList <Long> suppliersId = new ArrayList <Long>();
+    	suppliersByUser.forEach(s->suppliersId.add(s.getSupplier().getId()));
+    	HashMap <Long,String> allDestinations = addressService.getDestination(new DestinationRequest(possition,suppliersId));
+    	suppliersByUser.forEach(s->s.setDistance(allDestinations.get(s.getSupplier().getId())));
+    	return suppliersByUser;
+    }
 }
