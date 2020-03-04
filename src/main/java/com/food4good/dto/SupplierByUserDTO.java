@@ -1,5 +1,6 @@
 package com.food4good.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.food4good.facad.SupplierByUser;
 
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SupplierByUserDTO  {
+	@JsonUnwrapped
 	private SupplierInfoDTO supplierInfoDTO;
 	private boolean isUserFavorite;
 	private String distance;
