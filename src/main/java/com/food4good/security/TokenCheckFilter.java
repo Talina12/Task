@@ -66,11 +66,8 @@ public class TokenCheckFilter extends GenericFilterBean {
 
     private boolean isSkipMethod(HttpServletRequest httpRequest) {
         String uri = httpRequest.getRequestURI();
-        List<String> listOfFreeUri = Arrays.asList("swagger", "login", "api-docs");
+        List<String> listOfFreeUri = Arrays.asList("swagger", "login", "api-docs","error");
         boolean match = listOfFreeUri.stream().anyMatch(s -> uri.contains(s));
-        if (match) {
-            return true;
-        }
-        return false;
+        return match;
     }
 }

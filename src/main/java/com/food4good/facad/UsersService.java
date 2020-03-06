@@ -4,6 +4,8 @@ import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
+import com.food4good.security.UserPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -21,8 +23,13 @@ public class UsersService {
     	return usersRepository.findById(userId).orElseThrow(()-> new EntityNotFoundException("user not found"));
     }
     
-    public User getByToken(String token) throws Exception{
-    	User userEntity=usersRepository.findByToken(token).orElseThrow(()->new EntityNotFoundException("user not found"));
+    public User getByToken() throws Exception{
+        UserPrincipal userPrincipal= (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(userPrincipal==null)
+        {
+            throw new  EntityNotFoundException("Authentication not found");
+        }
+    	User userEntity=usersRepository.findByToken(userPrincipal.getToken()).orElseThrow(()->new EntityNotFoundException("user not found"));
     	return userEntity;
     }
 

@@ -43,26 +43,23 @@ public class SuppliersController {
         return supplierService.getAllInfo();
     }
 
-    @PostMapping(path = "/favorite/{supplierId}")
+    @GetMapping(path = "/favorite/{supplierId}")
     public ResponseEntity addRate(@PathVariable("supplierId") long supplierId) throws Exception {
-        String userToken=" ";
-        User user = usersService.getByToken(userToken);
+        User user = usersService.getByToken();
         int finalRate= supplierService.addSupplierRate(supplierId,user.getId());
         return ResponseEntity.ok(finalRate);
     }
     
     @DeleteMapping(value ="/favorite/{supplierId}")
     public ResponseEntity deleteRate(@PathVariable("supplierId") long supplierId ) throws Exception {
-    	String userToken=" ";
-    	User user = usersService.getByToken(userToken);
+    	User user = usersService.getByToken();
     	int finalRate=supplierService.deleteSupplierRate(supplierId,user.getId());
         return ResponseEntity.ok(finalRate);
     }
     
-    @GetMapping("/forUser")
+    @PostMapping("/forUser")
     public ResponseEntity<List<SupplierByUserDTO>> getAllSupliersInfo(@Validated @RequestBody GeoPoint myPossition) throws Exception {
-    	String userToken="123";
-    	User user = usersService.getByToken(userToken);
+    	User user = usersService.getByToken();
     	return ResponseEntity.ok(supplierService.getAllInfo(user, myPossition));
 	}
 }

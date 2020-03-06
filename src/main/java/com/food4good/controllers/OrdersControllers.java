@@ -44,39 +44,36 @@ public class OrdersControllers {
     
     @GetMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
     public List<OrderDTO> getOrdersOfUser() throws Exception {
-    	String userToken="456";
-    	User user = usersService.getByToken(userToken);
+    	User user = usersService.getByToken();
     	return ordersService.getOrdersByUser(user);
     }
     
     @PostMapping (value="/init")
     public ResponseEntity<NewOrderResponse> createNewOrder(@Validated @RequestBody NewOrderRequest orderRequest) throws Exception {
-    	String userToken="123";
-    	User user = usersService.getByToken(userToken);
+    	User user = usersService.getByToken();
     	return ResponseEntity.ok(ordersService.addOrder(orderRequest, user));
     	
     }
     
     @PostMapping(path = "/cancel/{order_id}")
     public ResponseEntity cancelOrder(@PathVariable("order_id") long orderId) throws Exception {
-        String userToken=" ";
-        User user = usersService.getByToken(userToken);
+
+        User user = usersService.getByToken();
         ordersService.setOrderStatus(orderId,user, OrderStatus.CANCELED);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(path = "/closed/{order_id}")
     public ResponseEntity closeOrder(@PathVariable("order_id") long orderId) throws Exception {
-        String userToken=" ";
-        User user = usersService.getByToken(userToken);
+
+        User user = usersService.getByToken();
         ordersService.setOrderStatus(orderId,user, OrderStatus.DELIVERED);
         return ResponseEntity.ok().build();
     }
     
     @PostMapping (value="/update")
     public ResponseEntity<NewOrderResponse> updateOrder(@Validated @RequestBody @NonNull UpdateOrderRequest orderRequest) throws Exception {
-    	String userToken="123";
-    	User user = usersService.getByToken(userToken);
+    	User user = usersService.getByToken();
     	return ResponseEntity.ok(ordersService.updateOrder(orderRequest, user));
     	
     }
@@ -88,8 +85,8 @@ public class OrdersControllers {
 
     @GetMapping("/undelivered")
     public ResponseEntity<Long> getUndeliveredOrders() throws Exception{
-    	String userToken="123";
-    	User user = usersService.getByToken(userToken);
+
+    	User user = usersService.getByToken();
     	return ResponseEntity.ok(ordersService.getUndelivered(user));
     }
 }
