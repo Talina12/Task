@@ -3,6 +3,7 @@ package com.food4good.security;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.google.common.base.Strings;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,29 +34,39 @@ public class TokenCheckFilter extends GenericFilterBean {
         System.out.println("in TokenCheckFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        if (!isSkipMethod(httpRequest)) {
-            String authorizationHeader = httpRequest.getHeader("Authorization");
-            if (Strings.isNullOrEmpty(authorizationHeader)) {
-                setException(httpServletResponse);
-                return;
+        if(httpRequest.getMethod().equals(HttpMethod.OPTIONS.name()))
+        {
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+            httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+            httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+            httpServletResponse.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,Authorization");
+        }else {
+            if (!isSkipMethod(httpRequest)) {
+                String authorizationHeader = httpRequest.getHeader("Authorization");
+                if (Strings.isNullOrEmpty(authorizationHeader)) {
+                    setException(httpServletResponse);
+                    return;
+                }
+                String token = authorizationHeader.split("Bearer ")[1];
+                if (Strings.isNullOrEmpty(token)) {
+                    setException(httpServletResponse);
+                    return;
+                }
+                Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, "USER");
+                if (!userOptional.isPresent()) {
+                    setException(httpServletResponse);
+                    return;
+                }
+                User user = userOptional.get();
+                UserPrincipal userPrincipal = new UserPrincipal(user.getToken(), user.getUdid(), user.getRoles(), user.getId().toString());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            String token = authorizationHeader.split("Bearer ")[1];
-            if (Strings.isNullOrEmpty(token)) {
-                setException(httpServletResponse);
-                return;
-            }
-            Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, "USER");
-            if (!userOptional.isPresent()) {
-                setException(httpServletResponse);
-                return;
-            }
-            User user = userOptional.get();
-            UserPrincipal userPrincipal = new UserPrincipal(user.getToken(), user.getUdid(), user.getRoles(), user.getId().toString());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);
     }
+
+
 
     private void setException(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
