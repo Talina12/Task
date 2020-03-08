@@ -1,20 +1,24 @@
 package com.food4good.facad;
 
+import com.food4good.config.BadRequestException;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
+import com.food4good.dto.AdminRegisterRequestDTO;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
 import com.food4good.security.UserPrincipal;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UsersService {
     UsersRepository usersRepository;
-
+    
     public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
@@ -53,4 +57,26 @@ public class UsersService {
         loginResponseDTO.setUserId(user.getId().toString());
         return loginResponseDTO;
     }
+
+	public LoginResponseDTO registerAdmin(AdminRegisterRequestDTO adminReqestDTO) {
+		User user;
+		Optional<User> optionalUser = usersRepository.findByEmailAndRoles(adminReqestDTO.getEmail(), "ADMIN");
+		if (optionalUser.isPresent()) throw new BadRequestException("a user with such an email exists");
+		else {
+			User userToSave = new User();
+			userToSave.setEmail(adminReqestDTO.getEmail());
+			userToSave.setName(adminReqestDTO.getName());
+			userToSave.setPassword(adminReqestDTO.getPassword());
+			userToSave.setPhone_number(adminReqestDTO.getPhone());
+			userToSave.setRoles("ADMIN");
+			String uuid = String.valueOf(UUID.randomUUID());
+			userToSave.setToken(uuid);
+			userToSave.setUdid(uuid);
+			user=usersRepository.save(userToSave);
+		}
+		LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+		loginResponseDTO.setToken(user.getToken());
+		loginResponseDTO.setUserId(String.valueOf(user.getId()));
+		return loginResponseDTO;
+	}
 }
