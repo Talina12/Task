@@ -25,6 +25,7 @@ public class ProductDTO extends BaseDTO {
     public static ProductDTO convertFromEntity(Products dish) {
         String num = String.valueOf( new GlobalProperties().getMaxNumOfDishes());
     	ProductDTO productDTO=new ProductDTO();
+    	productDTO.setId(dish.getId());
         productDTO.setAmount(dish.getAmount());
         productDTO.setDishDescription(dish.getDescription());
         productDTO.setDishName(dish.getName());

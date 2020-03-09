@@ -22,6 +22,7 @@ public class SupplierDTO extends BaseDTO{
     
     public static SupplierDTO convertFromEntity(Supplier supplier) {
         SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setId(supplier.getId());
         supplierDTO.setAddress(supplier.getAddress());
         supplierDTO.setBackgroundImage(supplier.getBackGroundImage());
         supplierDTO.setLogoImage(supplier.getLogoImage());
