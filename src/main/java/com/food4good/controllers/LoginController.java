@@ -4,12 +4,14 @@ import com.food4good.config.GlobalProperties;
 import com.food4good.dto.AdminRegisterRequestDTO;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
+import com.food4good.dto.SuperAdminRequestDTO;
 import com.food4good.facad.UsersService;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -38,5 +40,10 @@ public class LoginController {
     		}
     	else
     		return ResponseEntity.ok(usersService.registerAdmin(adminReqestDTO));
+    }
+    
+    @PostMapping(value= "/superAdmin")
+    public ResponseEntity<LoginResponseDTO> loginSuperAdmin(@RequestBody @NonNull SuperAdminRequestDTO superAdminRequest){
+    	return ResponseEntity.ok(usersService.loginSuperAdmin(superAdminRequest));
     }
 }
