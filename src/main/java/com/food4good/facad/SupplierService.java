@@ -112,4 +112,6 @@ public class SupplierService {
     	suppliersByUser.forEach(s->s.setDistance(allDestinations.get(s.getSupplier().getId())));
     	return suppliersByUser;
     }
+
+	
 }

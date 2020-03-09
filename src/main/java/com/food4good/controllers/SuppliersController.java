@@ -62,4 +62,5 @@ public class SuppliersController {
     	User user = usersService.getByToken();
     	return ResponseEntity.ok(supplierService.getAllInfo(user, myPossition));
 	}
-}
+    
+   }

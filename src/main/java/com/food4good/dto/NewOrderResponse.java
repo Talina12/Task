@@ -20,15 +20,17 @@ public class NewOrderResponse  {
 	private ArrayList<NewOrderProductResponse> products;
 	private String pickUpTime;
 	private String address;
+	private long supplierId;
+	private String comments;
 	private  String createdAt;
-	private String supplierId;
-	
 	public NewOrderResponse(Orders order) throws Exception {
 		this.orderId=order.getId();
 		this.totalPrice=order.getTotalPrice();
 		OrderProducts newOrderProduct=order.getProducts().stream().findFirst().orElseThrow(()->new Exception("no products in order"));
 		this.pickUpTime=newOrderProduct.getProducts().getSupplier().getOpenHours();
 		this.address=newOrderProduct.getProducts().getSupplier().getAddress();
+		this.supplierId = newOrderProduct.getProducts().getSupplier().getId();
+		this.comments = order.getComments();
 		this.createdAt=order.getCreatedAt().toString();
 		setProducts(order.getProducts());
 	};

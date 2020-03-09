@@ -18,4 +18,6 @@ public class GlobalProperties {
     @JsonProperty("max_num_of_dishes")
     private int maxNumOfDishes;
     
+    @JsonProperty("super_admin_token")
+    private String superAdminToken;
 }

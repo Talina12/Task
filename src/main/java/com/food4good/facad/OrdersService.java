@@ -125,7 +125,7 @@ public class OrdersService {
 
 	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder, long supplierId) throws Exception {
 		Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
-		if(product.getSupplier().getId()!=supplierId) throw new Exception("the product does not belong to the suppplier");
+		if(product.getSupplier().getId()!=supplierId) throw new BadRequestException("the product does not belong to the suppplier");
 		OrderProducts newOrderProduct= new OrderProducts();
 		 newOrderProduct.setAmount(row.getProductAmount());
 		 newOrderProduct.setOrders(newOrder);
