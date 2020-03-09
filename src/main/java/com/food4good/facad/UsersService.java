@@ -6,7 +6,7 @@ import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.AdminRegisterRequestDTO;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
-import com.food4good.dto.SuperAdminRequestDTO;
+import com.food4good.dto.AdminRequestDTO;
 import com.food4good.security.UserPrincipal;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,9 +81,9 @@ public class UsersService {
 		return loginResponseDTO;
 	}
 
-	public LoginResponseDTO loginSuperAdmin(SuperAdminRequestDTO superAdminRequest) {
-		User user = usersRepository.findByEmailAndPasswordAndRoles(superAdminRequest.getEmail(), superAdminRequest.getPassword(), "SUPER_ADMIN")
-				.orElseThrow(() -> new EntityNotFoundException(" such superAdmin not found"));
+	public LoginResponseDTO loginAdmin(AdminRequestDTO superAdminRequest, String role) {
+		User user = usersRepository.findByEmailAndPasswordAndRoles(superAdminRequest.getEmail(), superAdminRequest.getPassword(), role)
+				.orElseThrow(() -> new EntityNotFoundException(" such admin not found"));
 		LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
 		loginResponseDTO.setUserId(String.valueOf(user.getId()));
 		loginResponseDTO.setToken(user.getToken());

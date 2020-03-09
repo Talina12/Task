@@ -4,7 +4,7 @@ import com.food4good.config.GlobalProperties;
 import com.food4good.dto.AdminRegisterRequestDTO;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
-import com.food4good.dto.SuperAdminRequestDTO;
+import com.food4good.dto.AdminRequestDTO;
 import com.food4good.facad.UsersService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,12 @@ public class LoginController {
     }
     
     @PostMapping(value= "/superAdmin")
-    public ResponseEntity<LoginResponseDTO> loginSuperAdmin(@RequestBody @NonNull SuperAdminRequestDTO superAdminRequest){
-    	return ResponseEntity.ok(usersService.loginSuperAdmin(superAdminRequest));
+    public ResponseEntity<LoginResponseDTO> loginSuperAdmin(@RequestBody @NonNull AdminRequestDTO superAdminRequest){
+    	return ResponseEntity.ok(usersService.loginAdmin(superAdminRequest,"SUPER_ADMIN"));
+    }
+    
+    @PostMapping("/admin")
+    public ResponseEntity<LoginResponseDTO> loginAdmin(@RequestBody @NonNull AdminRequestDTO adminRequest){
+    	return ResponseEntity.ok(usersService.loginAdmin(adminRequest, "ADMIN"));
     }
 }
