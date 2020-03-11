@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class LoginReqestDTO {
     String udid;
+    String token;
     String email;
     String password;
 }

@@ -41,7 +41,7 @@ public class UsersService {
     public LoginResponseDTO loginUser(LoginReqestDTO loginReqestDTO) {
         LoginResponseDTO loginResponseDTO=new LoginResponseDTO();
         User user;
-        Optional<User> optionalUser = usersRepository.findByTokenAndRoles(loginReqestDTO.getUdid(), "USER");
+        Optional<User> optionalUser = usersRepository.findByTokenAndRoles(loginReqestDTO.getToken(), "USER");
         if(optionalUser.isPresent())
         {
             user=optionalUser.get();
@@ -50,7 +50,7 @@ public class UsersService {
         {
             User userToSave =new User();
             userToSave.setRoles("USER");
-            userToSave.setToken(loginReqestDTO.getUdid());
+            userToSave.setToken(loginReqestDTO.getToken());
             userToSave.setUdid(loginReqestDTO.getUdid());
             user=usersRepository.save(userToSave);
         }
