@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +39,11 @@ public class User extends  AbstractEntity{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsersPreference> preferences = new HashSet<>();
+    
+    @OneToOne (fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "supplier_id")
+    @JsonIgnore
+    private Supplier supplier;
 
     public User() {
     }

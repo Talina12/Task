@@ -11,4 +11,5 @@ public class AdminRegisterRequestDTO {
 	private String email;
     private String password;
 	private String phone;
+	private long suplierId;
  }

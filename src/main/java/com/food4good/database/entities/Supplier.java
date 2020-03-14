@@ -37,7 +37,6 @@ public class Supplier extends  AbstractEntity{
     private String latetude;
 
     @Column
-   // @Formula(value= " (  select count (*) from \"supplierRate\"   WHERE supplier_id=id)")
     private String rates;
 
     @Column(name="display_order")
