@@ -33,6 +33,7 @@ public class LoginController {
     }
     
     @PostMapping(value= "/admin/registration")
+    @CrossOrigin
     public ResponseEntity<LoginResponseDTO> registerAdmin(@RequestHeader("Authorization") String superToken, @RequestBody AdminRegisterRequestDTO adminReqestDTO) {
     	if (!superToken.equals(globalProperties.getSuperAdminToken())) {
     		log.debug("the token is not a superAdminToken");
@@ -43,6 +44,7 @@ public class LoginController {
     }
     
     @PostMapping(value= "/superAdmin")
+    @CrossOrigin
     public ResponseEntity<LoginResponseDTO> loginSuperAdmin(@RequestBody @NonNull AdminRequestDTO superAdminRequest){
     	return ResponseEntity.ok(usersService.loginAdmin(superAdminRequest,"SUPER_ADMIN"));
     }
