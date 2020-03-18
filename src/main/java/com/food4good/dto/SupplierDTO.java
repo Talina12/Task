@@ -5,6 +5,8 @@ import com.food4good.database.entities.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 
 @Getter
 @Setter
@@ -12,7 +14,7 @@ import lombok.Setter;
 public class SupplierDTO extends BaseDTO{
     private String supplierName;
     private String address;
-    private String openHours;
+    private Map<String,String> openHours;
     private String backgroundImage;
     private String logoImage;
     private String longtitude;
@@ -28,7 +30,7 @@ public class SupplierDTO extends BaseDTO{
         supplierDTO.setLogoImage(supplier.getLogoImage());
         supplierDTO.setLatetude(supplier.getLatetude());
         supplierDTO.setLongtitude(supplier.getLongtitude());
-        supplierDTO.setOpenHours(supplier.getOpenHours());
+       // supplierDTO.setOpenHours(supplier.getOpenHours());
         supplierDTO.setSupplierName(supplier.getName());
         supplierDTO.setRates(supplier.getRates());
         supplierDTO.setDisplayOrder(supplier.getDisplayOrder());

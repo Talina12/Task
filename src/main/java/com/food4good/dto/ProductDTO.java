@@ -1,5 +1,6 @@
 package com.food4good.dto;
 
+import com.food4good.database.entities.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.food4good.config.GlobalProperties;
@@ -38,6 +39,20 @@ public class ProductDTO extends BaseDTO {
         return productDTO;
     }
 
+
+
+    public static Products convertToEntity(ProductDTO productDTO, Supplier supplier){
+        Products products=new Products();
+        products.setAmount(productDTO.getAmount());
+        products.setDescription(productDTO.getDishDescription());
+        products.setFixPrice(productDTO.getFixPrice());
+        products.setMaxPrice(productDTO.getMaxPrice());
+        products.setMinPrice(productDTO.getMinPrice());
+        products.setName(productDTO.getDishName());
+        products.setOrigPrice(productDTO.getOriginalPrice());
+        products.setSupplier(supplier);
+        return products;
+    }
     private static String calculateDiscount(Products dish) {
         double origPrice=Double.valueOf(dish.getOrigPrice());
         double finalPrice;

@@ -59,8 +59,13 @@ public class SuppliersController {
     
     @PostMapping("/forUser")
     public ResponseEntity<List<SupplierByUserDTO>> getAllSupliersInfo(@Validated @RequestBody GeoPoint myPossition) throws Exception {
-    	User user = usersService.getByToken();
-    	return ResponseEntity.ok(supplierService.getAllInfo(user, myPossition));
-	}
+        User user = usersService.getByToken();
+        return ResponseEntity.ok(supplierService.getAllInfo(user, myPossition));
+    }
+    @CrossOrigin
+    @PostMapping
+    public ResponseEntity<SupplierInfoDTO> createSuppleir(@Validated @RequestBody SupplierInfoDTO supplierInfoDTO) throws Exception {
+        return ResponseEntity.ok(supplierService.createSupplier(supplierInfoDTO));
+    }
     
    }

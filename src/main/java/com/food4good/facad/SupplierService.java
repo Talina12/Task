@@ -1,23 +1,20 @@
 
 package com.food4good.facad;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.food4good.database.entities.Products;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.SupplierRate;
 import com.food4good.database.entities.User;
+import com.food4good.database.repositories.ProductsRepository;
 import com.food4good.database.repositories.SupplierRateRepository;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
-import com.food4good.dto.DestinationRequest;
-import com.food4good.dto.SupplierByUserDTO;
-import com.food4good.dto.SupplierDTO;
-import com.food4good.dto.SupplierInfoDTO;
+import com.food4good.dto.*;
 import com.food4good.dto.geocoding.GeoPoint;
-import com.food4good.facad.SupplierByUser;
-
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +27,14 @@ public class SupplierService {
     SupplierRateRepository supplierRateRepository;
     UsersRepository usersRepository;
     AddressService addressService;
+    ProductsRepository productsRepository;
 
-    public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, UsersRepository usersRepository, AddressService addressService) {
+    public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, UsersRepository usersRepository, AddressService addressService,ProductsRepository productsRepository) {
         this.supplierRepository = supplierRepository;
         this.usersRepository = usersRepository;
         this.supplierRateRepository = suppliersRateRepository;
         this.addressService = addressService;
+        this.productsRepository=productsRepository;
     }
 
     public SupplierDTO getById(Long supplierId) throws Exception {
@@ -44,12 +43,28 @@ public class SupplierService {
         return supplierDTO;
     }
 
-    public List<SupplierInfoDTO> getAllInfo() {
+    public List<SupplierInfoDTO> getAllInfo() throws Exception{
         List<Supplier> all = supplierRepository.findAll();
-        List<SupplierInfoDTO> supplierInfoDTOS = all.stream().map(SupplierInfoDTO::convertFromEntity).collect(Collectors.toList());
+        List<SupplierInfoDTO> supplierInfoDTOS = new ArrayList<>();
+        for (Supplier supplier : all) {
+            SupplierInfoDTO supplierInfoDTO = SupplierInfoDTO.convertFromEntity(supplier);
+            supplierInfoDTOS.add(supplierInfoDTO);
+        }
         return supplierInfoDTOS;
     }
-
+    public List<SupplierByUserDTO> getAllInfo(User user, GeoPoint possition) throws Exception {
+        List<Supplier> allSuppliers = supplierRepository.findAll();
+        ArrayList <SupplierByUser> suppliersByUser = new ArrayList <SupplierByUser>();
+        allSuppliers.forEach(s->suppliersByUser.add(new SupplierByUser(s)));
+        if (possition != null)   setSupliersDistance(suppliersByUser,possition);
+        suppliersByUser.forEach(s->s.setFavorite(isFavorite(user,s.getSupplier())));
+        List<SupplierByUserDTO> list = new ArrayList<>();
+        for (SupplierByUser supplierByUser : suppliersByUser) {
+            SupplierByUserDTO supplierByUserDTO = SupplierByUserDTO.convertFromEntity(supplierByUser);
+            list.add(supplierByUserDTO);
+        }
+        return list;
+    }
     public int getAllSupplierRate(Long supplierId) {
         Optional<Supplier> supplierOptional = supplierRepository.findById(supplierId);
         if (supplierOptional.isPresent()) {
@@ -89,14 +104,7 @@ public class SupplierService {
         return finalSupplierRate;
     }
 
-	public List<SupplierByUserDTO> getAllInfo(User user, GeoPoint possition) throws Exception {
-		List<Supplier> allSuppliers = supplierRepository.findAll();
-		ArrayList <SupplierByUser> suppliersByUser = new ArrayList <SupplierByUser>();
-		allSuppliers.forEach(s->suppliersByUser.add(new SupplierByUser(s)));
-		if (possition != null)   setSupliersDistance(suppliersByUser,possition);
-		suppliersByUser.forEach(s->s.setFavorite(isFavorite(user,s.getSupplier())));
-		return suppliersByUser.stream().map(SupplierByUserDTO::convertFromEntity).collect(Collectors.toList());
-	}
+
     
     public boolean isFavorite(User user, Supplier supplier) {
     	if (supplierRateRepository.findByUserAndSupplier(user, supplier).isPresent())
@@ -113,5 +121,17 @@ public class SupplierService {
     	return suppliersByUser;
     }
 
-	
+
+    public SupplierInfoDTO createSupplier(SupplierInfoDTO supplierInfoDTO) throws JsonProcessingException {
+        Supplier supplier = SupplierInfoDTO.convertToEntity(supplierInfoDTO);
+        supplier = supplierRepository.save(supplier);
+        supplierInfoDTO.getSupplierDTO().setId(supplier.getId());
+        for(ProductDTO productDTO : supplierInfoDTO.getProductDTOList())
+        {
+            Products product=ProductDTO.convertToEntity(productDTO,supplier);
+            product= productsRepository.save(product);
+            productDTO.setId(product.getId());
+        }
+        return supplierInfoDTO;
+    }
 }

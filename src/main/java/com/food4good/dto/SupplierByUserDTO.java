@@ -1,6 +1,7 @@
 package com.food4good.dto;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.food4good.facad.SupplierByUser;
 
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class SupplierByUserDTO  {
 	private boolean isUserFavorite;
 	private String distance;
 	
-	public static SupplierByUserDTO convertFromEntity(SupplierByUser supplierByUser) {
+	public static SupplierByUserDTO convertFromEntity(SupplierByUser supplierByUser) throws Exception {
 		SupplierByUserDTO supplierByUserDTO = new SupplierByUserDTO(); 
 		supplierByUserDTO.setSupplierInfoDTO(SupplierInfoDTO.convertFromEntity(supplierByUser.getSupplier()));
 		supplierByUserDTO.setDistance(supplierByUser.getDistance());
