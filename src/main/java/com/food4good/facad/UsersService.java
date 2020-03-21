@@ -1,6 +1,7 @@
 package com.food4good.facad;
 
 import com.food4good.config.BadRequestException;
+import com.food4good.config.NotificationsConfig;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.SupplierRepository;
@@ -8,13 +9,22 @@ import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.AdminRegisterRequestDTO;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
+import com.food4good.dto.NotificationDTO;
+import com.food4good.dto.NotificationRequestDTO;
+import com.food4good.dto.NotificationResponse;
 import com.food4good.dto.AdminRequestDTO;
 import com.food4good.security.UserPrincipal;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,10 +32,17 @@ import java.util.UUID;
 public class UsersService {
     UsersRepository usersRepository;
     SupplierRepository supplierRepository;
+    private WebClient client;
+    private NotificationsConfig notifConfig;
     
-    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository) {
+    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository, NotificationsConfig notifConfig) {
         this.usersRepository = usersRepository;
         this.supplierRepository = supplierRepository;
+        this.notifConfig = notifConfig;
+        this.client = WebClient
+				  .builder()
+				  .baseUrl(notifConfig.getUrl())
+				  .build();
     }
 
     public User getById(Long userId)  {
@@ -90,5 +107,20 @@ public class UsersService {
 		userToSave.setUdid(uuid);
 		userToSave.setSupplier(supplier);
 		return usersRepository.save(userToSave);
+	}
+
+	public int sendNotifications(List<NotificationDTO> notificationList) {
+		WebClient.RequestBodySpec request;
+		request = client.post().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				               .header(HttpHeaders.AUTHORIZATION, notifConfig.getKey());
+		return notificationList.stream().mapToInt(n->send(n,request)).sum();
+	}
+	
+	private int send(NotificationDTO notification, WebClient.RequestBodySpec request) {
+		NotificationRequestDTO requestDTO = new NotificationRequestDTO(notification);
+		requestDTO.setPriority("normal");
+		requestDTO.getNotification().setIcon("myicon");
+		NotificationResponse response = request.bodyValue(requestDTO).retrieve().bodyToMono(NotificationResponse.class).block();
+		return response.getSuccess();
 	}
 }
