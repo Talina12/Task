@@ -11,7 +11,6 @@ import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
 import com.food4good.dto.NotificationDTO;
 import com.food4good.dto.NotificationRequestDTO;
-import com.food4good.dto.NotificationResponse;
 import com.food4good.dto.AdminRequestDTO;
 import com.food4good.security.UserPrincipal;
 
@@ -109,18 +108,17 @@ public class UsersService {
 		return usersRepository.save(userToSave);
 	}
 
-	public int sendNotifications(List<NotificationDTO> notificationList) {
+	public void sendNotifications(List<NotificationDTO> notificationList) {
 		WebClient.RequestBodySpec request;
 		request = client.post().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				               .header(HttpHeaders.AUTHORIZATION, notifConfig.getKey());
-		return notificationList.stream().mapToInt(n->send(n,request)).sum();
+		notificationList.forEach(n->send(n,request));
 	}
 	
-	private int send(NotificationDTO notification, WebClient.RequestBodySpec request) {
+	private void send(NotificationDTO notification, WebClient.RequestBodySpec request) {
 		NotificationRequestDTO requestDTO = new NotificationRequestDTO(notification);
 		requestDTO.setPriority("normal");
 		requestDTO.getNotification().setIcon("myicon");
-		NotificationResponse response = request.bodyValue(requestDTO).retrieve().bodyToMono(NotificationResponse.class).block();
-		return response.getSuccess();
+	    request.bodyValue(requestDTO).retrieve().bodyToMono(Object.class).block();
 	}
 }

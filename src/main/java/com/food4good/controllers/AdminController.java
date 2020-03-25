@@ -22,8 +22,10 @@ public class AdminController {
 		this.usersService = usersService;
 	}
 	
+	//leave temporarily
 	@PostMapping("/notify")
-    public ResponseEntity<Integer> sendNotifications(@RequestBody @NotNull List<NotificationDTO> notifications) {
-    	return ResponseEntity.ok(usersService.sendNotifications(notifications));
+    public void sendNotifications(@RequestBody @NotNull List<NotificationDTO> notifications) {
+		usersService.sendNotifications(notifications);
+		
     }
 }
