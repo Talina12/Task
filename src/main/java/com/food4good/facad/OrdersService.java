@@ -5,15 +5,17 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 import java.util.*;
-import java.util.stream.Collectors;
-
 import javax.persistence.EntityNotFoundException;
 
 import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
+import com.sun.el.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.food4good.database.entities.OrderProducts;
 import com.food4good.database.entities.Orders;
@@ -77,9 +79,13 @@ public class OrdersService {
 
 	public void setOrderStatus(long orderId,User user,OrderStatus status)throws Exception {
 		Orders order = ordersReppository.findByIdAndUser(orderId, user).orElseThrow(() -> new EntityNotFoundException("cannot find this order for user id"));
-		if(status.equals(OrderStatus.CANCELED)) validateHoursRangeBeforeClose(order);
+		if(status.equals(OrderStatus.CANCELED)) 
+		{
+			validateHoursRangeBeforeClose(order);
+			order.getProducts().forEach(p->updateProductAmount(p.getProducts(), p.getAmount()*-1));
+			};
 		order.setStatus(status.getStatus());
-		ordersReppository.save(order);
+		ordersReppository.save(order); 
 	}
 	
 	public void validateHoursRangeBeforeClose(Orders order)throws Exception{
@@ -125,14 +131,18 @@ public class OrdersService {
 
 	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder, long supplierId) throws Exception {
 		Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
-		if(product.getSupplier().getId()!=supplierId) throw new BadRequestException("the product does not belong to the suppplier");
+		if(product.getSupplier().getId()!=supplierId) {
+			deleteOrderProducts(newOrder);
+			ordersReppository.delete(newOrder);
+			throw new BadRequestException("the product does not belong to the suppplier");
+			};
 		OrderProducts newOrderProduct= new OrderProducts();
-		 newOrderProduct.setAmount(row.getProductAmount());
-		 newOrderProduct.setOrders(newOrder);
-		 if (product.getFixPrice()!=null) newOrderProduct.setPrice(product.getFixPrice());
-		 else newOrderProduct.setPrice(product.getMaxPrice());
-		 newOrderProduct.setProducts(product);
-		 return (orderProductsRepository.save(newOrderProduct));
+		newOrderProduct.setAmount(updateProductAmount(product,row.getProductAmount()));
+		newOrderProduct.setOrders(newOrder);
+		if (product.getFixPrice()!=null) newOrderProduct.setPrice(product.getFixPrice());
+		else newOrderProduct.setPrice(product.getMaxPrice());
+		newOrderProduct.setProducts(product);
+		return (orderProductsRepository.save(newOrderProduct));
 	}
 
 	public NewOrderResponse updateOrder(UpdateOrderRequest orderRequest, User user) throws Exception {
@@ -148,7 +158,11 @@ public class OrdersService {
 	}
 	
 	protected void deleteOrderProducts(Orders order) {
-		order.getProducts().stream().forEach((p)->orderProductsRepository.delete(p));
+		Set<OrderProducts> allProducts = order.getProducts();
+		for (OrderProducts op:allProducts) {
+			updateProductAmount(op.getProducts(), op.getAmount()*-1);
+			orderProductsRepository.delete(op);
+		}
 		order.getProducts().clear();
 	}
 
@@ -161,6 +175,50 @@ public class OrdersService {
 	public Long getUndelivered(User user) {
 		return ordersReppository.findAllByUser(user).stream().filter((o)->o.getStatus().equals(OrderStatus.NEW.getStatus())).count();
 		}
+	
+	private Integer updateProductAmount(Products product, int productAmount) {
+		int newAmount=product.getRealAmount()-productAmount;
+		if (newAmount<0) 
+		{
+			newAmount=product.getAmount();
+			product.setRealAmount(0);
+		  }
+		else 
+		{
+			product.setRealAmount(newAmount);
+			newAmount=productAmount;
+			}
+		productsRepository.save(product);
+		return newAmount;
+	}
 
+	@Scheduled(cron = "0 0 6 * * ?", zone = "UTC")
+	public void setOriginProductAmount() {
+		List<Supplier> allSuppliers = supplierRepository.findAll();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		for(Supplier supplier:allSuppliers) {
+			List<Products>supplierProducts = productsRepository.findBySupplier(supplier);
+			java.util.stream.Stream<Integer> workingDays = getWorkingDays(supplier);
+			if (workingDays.anyMatch(Integer.valueOf(calendar.get(Calendar.DAY_OF_WEEK))::equals)) 
+			  supplierProducts.forEach(s -> resetProductAmount(s));	
+		}
+	}
+
+	private java.util.stream.Stream<Integer> getWorkingDays(Supplier supplier) {
+		String openHours = supplier.getOpenHours();
+		String [] days;
+		if (openHours!=null&&!openHours.equals("")) {
+			days = openHours.split(","); 
+			days[0] = days[0].substring(1);
+	 	}
+		else days = new String[] {"1","2","3","4","5","6","7"}; 
+		return Arrays.stream(days).map(s -> Integer.valueOf(s.substring(1, 2)));
+	}
+	
+	private void resetProductAmount(Products product) {
+		int amount = product.getAmount();
+		product.setRealAmount(amount);
+		productsRepository.save(product);
+	}
 }
 

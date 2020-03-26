@@ -37,6 +37,9 @@ public class Products extends  AbstractEntity{
     @JoinColumn(name = "supplier_id", nullable = false)
     @JsonIgnore
     private Supplier supplier;
+    
+    @Column(name="real_amount")
+    private Integer realAmount;
 
     public Products() {
     }
