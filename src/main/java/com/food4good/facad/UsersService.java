@@ -12,13 +12,10 @@ import com.food4good.dto.LoginResponseDTO;
 import com.food4good.dto.NotificationDTO;
 import com.food4good.dto.NotificationRequestDTO;
 import com.food4good.dto.AdminRequestDTO;
-import com.food4good.security.UserPrincipal;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityNotFoundException;
@@ -49,13 +46,13 @@ public class UsersService {
     }
     
     public User getByToken() throws Exception{
-        UserPrincipal userPrincipal= (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(userPrincipal==null)
+        User user= (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user==null)
         {
             throw new  EntityNotFoundException("Authentication not found");
         }
-    	User userEntity=usersRepository.findByToken(userPrincipal.getToken()).orElseThrow(()->new EntityNotFoundException("user not found"));
-    	return userEntity;
+    //	User userEntity=usersRepository.findByToken(userPrincipal.getToken()).orElseThrow(()->new EntityNotFoundException("user not found"));
+    	return user;
     }
 
     public LoginResponseDTO loginUser(LoginReqestDTO loginReqestDTO) {

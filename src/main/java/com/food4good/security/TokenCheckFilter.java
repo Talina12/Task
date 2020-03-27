@@ -58,8 +58,8 @@ public class TokenCheckFilter extends GenericFilterBean {
                     return;
                 }
                 User user = userOptional.get();
-                UserPrincipal userPrincipal = new UserPrincipal(user.getToken(), user.getUdid(), user.getRoles(), user.getId().toString());
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, token);
+             //   UserPrincipal userPrincipal = new UserPrincipal(user.getToken(), user.getUdid(), user.getRoles(), user.getId().toString());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

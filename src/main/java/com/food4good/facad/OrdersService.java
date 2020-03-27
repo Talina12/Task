@@ -10,13 +10,9 @@ import javax.persistence.EntityNotFoundException;
 import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
-import com.sun.el.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.food4good.database.entities.OrderProducts;
 import com.food4good.database.entities.Orders;
 import com.food4good.database.entities.Products;
