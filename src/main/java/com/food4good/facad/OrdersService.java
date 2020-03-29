@@ -7,6 +7,8 @@ import java.time.temporal.ChronoField;
 import java.util.*;
 import javax.persistence.EntityNotFoundException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
@@ -89,25 +91,27 @@ public class OrdersService {
 		for (OrderProducts orderProduct:orderProductsSet)
 		{
 			Products product=productsRepository.findById(orderProduct.getProducts().getId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
-			String pickUpTime = product.getSupplier().getOpenHours();
-			if(pickUpTime!=null&&!pickUpTime.equals(""))
-			{
-				if(!checkHoursRange(pickUpTime, hoursBeforeClose))
+
+				if(!checkHoursRange(product.getSupplier().getOpenHours(), hoursBeforeClose))
 					throw new BadRequestException("time range not valid");
-			}
+
 		}
 	}
 
 
-	public boolean checkHoursRange(String openHours, int diff){
+	public boolean checkHoursRange(String openHours, int diff) throws JsonProcessingException {
+		ObjectMapper objectMapper=new ObjectMapper();
+		Map<String,String> openHoursMap=objectMapper.readValue(openHours,Map.class);
+		Calendar cal = Calendar.getInstance();
+		String todayDay = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
+		String openHoursToday=openHoursMap.get(todayDay);
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
 		String token = "-";
-		String openHour = openHours.substring(0, openHours.indexOf(token)).trim();
-		String closeHour = openHours.substring(openHours.indexOf(token) + 1, openHours.length()).trim();
+		String openHour = openHoursToday.substring(0, openHoursToday.indexOf(token)).trim();
+		String closeHour = openHoursToday.substring(openHoursToday.indexOf(token) + 1, openHoursToday.length()).trim();
 		Calendar cal1 = Calendar.getInstance();
 		String[] parts = closeHour.split(":");
 		cal1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
-		cal1.set(Calendar.MINUTE, Integer.parseInt(parts[1]));
 
 		LocalTime localTime = LocalTime.now();
 		int hour = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);

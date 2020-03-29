@@ -6,11 +6,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.food4good.dto.CoordinatesRequest;
 import com.food4good.dto.CoordinatesResponse;
 import com.food4good.dto.DestinationRequest;
@@ -29,6 +25,7 @@ public class AddressController {
 	}
 	
 	@PostMapping (value="/validation")
+	@CrossOrigin
     public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody @NonNull CoordinatesRequest coordinatesRequest) throws EntityNotFoundException
 	{   
 		CoordinatesResponse	result;

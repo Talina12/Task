@@ -1,5 +1,5 @@
 custom-properties:
-  hours-before-close: 3
+  hours-before-close: 1
   geocoding:
     key: "AIzaSyC8vq02IetvzCNGAWAHIJIumg15D-NIh3c"
     base_url: "https://maps.googleapis.com/maps/api"
