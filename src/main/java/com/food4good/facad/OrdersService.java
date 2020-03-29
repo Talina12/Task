@@ -13,7 +13,6 @@ import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.food4good.database.entities.OrderProducts;
 import com.food4good.database.entities.Orders;
@@ -190,35 +189,6 @@ public class OrdersService {
 			}
 		productsRepository.save(product);
 		return newAmount;
-	}
-
-	@Scheduled(cron = "0 0 6 * * ?", zone = "UTC")
-	public void setOriginProductAmount() {
-		List<Supplier> allSuppliers = supplierRepository.findAll();
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		for(Supplier supplier:allSuppliers) {
-			List<Products>supplierProducts = productsRepository.findBySupplier(supplier);
-			java.util.stream.Stream<Integer> workingDays = getWorkingDays(supplier);
-			if (workingDays.anyMatch(Integer.valueOf(calendar.get(Calendar.DAY_OF_WEEK))::equals)) 
-			  supplierProducts.forEach(s -> resetProductAmount(s));	
-		}
-	}
-
-	private java.util.stream.Stream<Integer> getWorkingDays(Supplier supplier) {
-		String openHours = supplier.getOpenHours();
-		String [] days;
-		if (openHours!=null&&!openHours.equals("")) {
-			days = openHours.split(","); 
-			days[0] = days[0].substring(1);
-	 	}
-		else days = new String[] {"1","2","3","4","5","6","7"}; 
-		return Arrays.stream(days).map(s -> Integer.valueOf(s.substring(1, 2)));
-	}
-	
-	private void resetProductAmount(Products product) {
-		int amount = product.getAmount();
-		product.setRealAmount(amount);
-		productsRepository.save(product);
 	}
 }
 

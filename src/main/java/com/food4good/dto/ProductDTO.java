@@ -22,6 +22,7 @@ public class ProductDTO extends BaseDTO {
     private String originalPrice;
     private String discount;
     private String maxNumOfDishes;
+    private Integer availableDishAmount;
 
     public static ProductDTO convertFromEntity(Products dish) {
         String num = String.valueOf( new GlobalProperties().getMaxNumOfDishes());
@@ -36,6 +37,7 @@ public class ProductDTO extends BaseDTO {
         productDTO.setOriginalPrice(dish.getOrigPrice());
         productDTO.setDiscount(calculateDiscount(dish));
         productDTO.setMaxNumOfDishes(num);
+        productDTO.setAvailableDishAmount(dish.getRealAmount());
         return productDTO;
     }
 
@@ -50,6 +52,7 @@ public class ProductDTO extends BaseDTO {
         products.setMinPrice(productDTO.getMinPrice());
         products.setName(productDTO.getDishName());
         products.setOrigPrice(productDTO.getOriginalPrice());
+        products.setRealAmount(productDTO.getAmount());
         products.setSupplier(supplier);
         return products;
     }
