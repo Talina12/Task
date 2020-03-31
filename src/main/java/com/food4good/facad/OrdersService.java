@@ -1,13 +1,12 @@
 package com.food4good.facad;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.time.LocalTime;
-import java.time.temporal.ChronoField;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import javax.persistence.EntityNotFoundException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
@@ -66,7 +65,7 @@ public class OrdersService {
 	newOrder.setTotalPrice();
 	newOrder =ordersReppository.save(newOrder);
 	return new NewOrderResponse(newOrder);
- }
+  }
 	public List<OrderDTO> getOrdersByUser(User user ) {
 		List<Orders> orders= ordersReppository.findAllByUser(user);
 		ArrayList<OrderDTO> ordersDto= new ArrayList<OrderDTO>();
@@ -76,57 +75,40 @@ public class OrdersService {
 
 	public void setOrderStatus(long orderId,User user,OrderStatus status)throws Exception {
 		Orders order = ordersReppository.findByIdAndUser(orderId, user).orElseThrow(() -> new EntityNotFoundException("cannot find this order for user id"));
-		if(status.equals(OrderStatus.CANCELED)) 
-		{
-			validateHoursRangeBeforeClose(order);
-			order.getProducts().forEach(p->updateProductAmount(p.getProducts(), p.getAmount()*-1));
+		if(status.equals(OrderStatus.CANCELED)) {
+			Set<OrderProducts> orderProducts = order.getProducts();
+			validateHoursRangeBeforeClose(orderProducts);
+			orderProducts.forEach(p->updateProductAmount(p.getProducts(), p.getAmount()*-1));
 			};
 		order.setStatus(status.getStatus());
 		ordersReppository.save(order); 
 	}
 	
-	public void validateHoursRangeBeforeClose(Orders order)throws Exception{
-		Set<OrderProducts> orderProductsSet = order.getProducts();
-		for (OrderProducts orderProduct:orderProductsSet)
-		{
-			Products product=productsRepository.findById(orderProduct.getProducts().getId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
-
-				if(!checkHoursRange(product.getSupplier().getOpenHours(), hoursBeforeClose))
-					throw new BadRequestException("time range not valid");
-
-		}
+	public void validateHoursRangeBeforeClose(Set<OrderProducts> orderProducts) throws Exception{
+		OrderProducts anyOrderProduct = orderProducts.stream().findAny().orElseThrow(() -> new EntityNotFoundException("product not found"));
+		Supplier supplier = anyOrderProduct.getProducts().getSupplier();
+		if(!checkHoursRange(supplier.getOpenHours(), hoursBeforeClose))
+			throw new BadRequestException("time range not valid");
 	}
-
-
-	public boolean checkHoursRange(String openHours, int diff) throws JsonProcessingException {
+		
+    public boolean checkHoursRange(String openHours, int diff) throws Exception  {
 		ObjectMapper objectMapper=new ObjectMapper();
-		Map<String,String> openHoursMap=objectMapper.readValue(openHours,Map.class);
+		Map <String,String> openHoursMap = objectMapper.readValue(openHours,Map.class);
 		Calendar cal = Calendar.getInstance();
 		String todayDay = String.valueOf(cal.get(Calendar.DAY_OF_WEEK));
 		String openHoursToday=openHoursMap.get(todayDay);
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-		String token = "-";
-		String openHour = openHoursToday.substring(0, openHoursToday.indexOf(token)).trim();
-		String closeHour = openHoursToday.substring(openHoursToday.indexOf(token) + 1, openHoursToday.length()).trim();
-		Calendar cal1 = Calendar.getInstance();
-		String[] parts = closeHour.split(":");
-		cal1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
-
-		LocalTime localTime = LocalTime.now();
-		int hour = localTime.get(ChronoField.CLOCK_HOUR_OF_DAY);
-		int minute = localTime.get(ChronoField.MINUTE_OF_HOUR);
-
-		Calendar cal2 = Calendar.getInstance();
-		cal2.set(Calendar.HOUR_OF_DAY, hour);
-		cal2.set(Calendar.MINUTE, minute);
-
-		long seconds = (cal1.getTimeInMillis() - cal2.getTimeInMillis()) / 1000;
-		int hours = (int) (seconds / 3600);
-		if (hours >= diff) return true;
-
-		return false;
+		LocalTime now = ZonedDateTime.now(ZoneId.of("Israel")).toLocalTime();
+		if (now.isAfter(getCloseHour(openHoursToday).minusHours(diff)))
+				return false; 
+			else return true;
+		}
+		
+	private LocalTime getCloseHour(String workingHours) throws ParseException {
+		int dif = workingHours.indexOf('-');
+		workingHours = workingHours.substring(dif+1).trim();
+		LocalTime closingTime = LocalTime.parse(workingHours);
+		return closingTime;
 	}
-
 
 	protected OrderProducts createOrderProduct(NewOrderProductRequest row, Orders newOrder, long supplierId) throws Exception {
 		Products product=productsRepository.findById(row.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
