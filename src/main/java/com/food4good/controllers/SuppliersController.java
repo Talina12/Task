@@ -1,7 +1,6 @@
 
 package com.food4good.controllers;
 
-
 import com.food4good.database.entities.User;
 import com.food4good.dto.SupplierDTO;
 import com.food4good.dto.SupplierInfoDTO;
@@ -40,7 +39,7 @@ public class SuppliersController {
     @CrossOrigin
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<SupplierInfoDTO> getAllsuppliersInfo() throws Exception {
-        return supplierService.getAllInfo();
+        return supplierService.getActiveInfo();
     }
 
     @GetMapping(path = "/favorite/{supplierId}")
@@ -62,10 +61,10 @@ public class SuppliersController {
         User user = usersService.getByToken();
         return ResponseEntity.ok(supplierService.getAllInfo(user, myPossition));
     }
+    
     @CrossOrigin
     @PostMapping
     public ResponseEntity<SupplierInfoDTO> createSuppleir(@Validated @RequestBody SupplierInfoDTO supplierInfoDTO) throws Exception {
         return ResponseEntity.ok(supplierService.createSupplier(supplierInfoDTO));
     }
-    
    }

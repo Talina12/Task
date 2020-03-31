@@ -32,7 +32,7 @@ public class LoginController {
         return usersService.loginUser(loginReqestDTO);
     }
     
-    @PostMapping(value= "/admin/registration")
+    @PostMapping(value= "/admin_registration")
     @CrossOrigin
     public ResponseEntity<LoginResponseDTO> registerAdmin(@RequestHeader("Authorization") String superToken, @RequestBody AdminRegisterRequestDTO adminReqestDTO) {
     	if (!superToken.equals(globalProperties.getSuperAdminToken())) {
@@ -53,4 +53,7 @@ public class LoginController {
     public ResponseEntity<LoginResponseDTO> loginAdmin(@RequestBody @NonNull AdminRequestDTO adminRequest){
     	return ResponseEntity.ok(usersService.loginAdmin(adminRequest, "ADMIN"));
     }
+    
+    @PostMapping("/test")
+    public String test(){ return "Test = ok";}
 }

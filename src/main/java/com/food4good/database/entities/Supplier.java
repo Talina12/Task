@@ -48,6 +48,9 @@ public class Supplier extends  AbstractEntity{
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SupplierFilters> filters = new HashSet<>();
     
+    @Column (name="is_Active")
+    private boolean isActive;
+    
     public Supplier() {
     }
 }

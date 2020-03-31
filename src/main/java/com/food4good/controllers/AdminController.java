@@ -2,30 +2,29 @@ package com.food4good.controllers;
 
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food4good.dto.NotificationDTO;
-import com.food4good.facad.UsersService;
+import com.food4good.dto.SupplierInfoDTO;
+import com.food4good.facad.SupplierService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-	private final UsersService usersService;
+	private SupplierService supplierService;
 	
-	public AdminController(UsersService usersService) {
-		this.usersService = usersService;
+	public AdminController(SupplierService supplierService) {
+		this.supplierService = supplierService;
 	}
 	
-	//leave temporarily
-	@PostMapping("/notify")
-    public void sendNotifications(@RequestBody @NotNull List<NotificationDTO> notifications) {
-		usersService.sendNotifications(notifications);
-		
+	@GetMapping("/all_suppliers")
+	public  List<SupplierInfoDTO> getAllsuppliersInfo() throws Exception {
+        return supplierService.getAllInfo();
+    }
+	
+	@GetMapping("/active_suppliers")
+	public  List<SupplierInfoDTO> getActivesuppliersInfo() throws Exception {
+        return supplierService.getActiveInfo();
     }
 }

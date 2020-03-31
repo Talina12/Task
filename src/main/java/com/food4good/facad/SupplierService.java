@@ -12,6 +12,8 @@ import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.*;
 import com.food4good.dto.geocoding.GeoPoint;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -104,8 +106,6 @@ public class SupplierService {
         return finalSupplierRate;
     }
 
-
-    
     public boolean isFavorite(User user, Supplier supplier) {
     	if (supplierRateRepository.findByUserAndSupplier(user, supplier).isPresent())
     		return true;
@@ -134,4 +134,14 @@ public class SupplierService {
         }
         return supplierInfoDTO;
     }
+
+	public List<SupplierInfoDTO> getActiveInfo() throws Exception {
+		List<Supplier> all = supplierRepository.findByIsActive(true);
+        List<SupplierInfoDTO> supplierInfoDTOS = new ArrayList<>();
+        for (Supplier supplier : all) {
+            SupplierInfoDTO supplierInfoDTO = SupplierInfoDTO.convertFromEntity(supplier);
+            supplierInfoDTOS.add(supplierInfoDTO);
+        }
+        return supplierInfoDTOS;
+	}
 }

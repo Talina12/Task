@@ -13,4 +13,5 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     Optional<Supplier> findById(Long id); 
     List<Supplier> findAll();
+    List<Supplier> findByIsActive(boolean isActive);
   }

@@ -51,8 +51,7 @@ public class UsersService {
         {
             throw new  EntityNotFoundException("Authentication not found");
         }
-    //	User userEntity=usersRepository.findByToken(userPrincipal.getToken()).orElseThrow(()->new EntityNotFoundException("user not found"));
-    	return user;
+        return user;
     }
 
     public LoginResponseDTO loginUser(LoginReqestDTO loginReqestDTO) {
