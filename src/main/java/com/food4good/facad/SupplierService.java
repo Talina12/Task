@@ -2,6 +2,7 @@
 package com.food4good.facad;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.food4good.config.BadRequestException;
 import com.food4good.database.entities.Products;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.SupplierRate;
@@ -13,7 +14,7 @@ import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.*;
 import com.food4good.dto.geocoding.GeoPoint;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SupplierService {
@@ -30,6 +30,8 @@ public class SupplierService {
     UsersRepository usersRepository;
     AddressService addressService;
     ProductsRepository productsRepository;
+    @Autowired
+    UsersService usersService;
 
     public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, UsersRepository usersRepository, AddressService addressService,ProductsRepository productsRepository) {
         this.supplierRepository = supplierRepository;
@@ -143,5 +145,17 @@ public class SupplierService {
             supplierInfoDTOS.add(supplierInfoDTO);
         }
         return supplierInfoDTOS;
+	}
+
+	public void updateSupplier(Long supplierId, SupplierPermanentDTO suplierPermanentDTO) throws Exception {
+		Supplier supplier =supplierRepository.findById(supplierId).orElseThrow(() -> new EntityNotFoundException("supplier not found"));
+		User autorizedUser = usersService.getByToken();
+		if (autorizedUser.getRoles().equals("ADMIN"))
+			if (autorizedUser.getSupplier().getId() != supplierId)
+				throw new BadRequestException("supplier is not belong to autorized user");
+		supplier.setAddress(suplierPermanentDTO.getAddress());
+		supplier.setName(suplierPermanentDTO.getName());
+		supplier.setOpenHours(suplierPermanentDTO.getOpenHours());
+		supplierRepository.save(supplier);
 	}
 }

@@ -23,11 +23,11 @@ import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.google.common.base.Strings;
 
-public class SuppliersFilter extends GenericFilterBean{
+public class AdminFilter extends GenericFilterBean{
 
 	UsersRepository usersRepository;
 	
-	public SuppliersFilter(UsersRepository usersRepository) {
+	public AdminFilter(UsersRepository usersRepository) {
 		this.usersRepository = usersRepository;
 	}
 	
@@ -48,8 +48,11 @@ public class SuppliersFilter extends GenericFilterBean{
             }
             Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, "ADMIN");
             if (!userOptional.isPresent()) {
+            	userOptional = usersRepository.findByTokenAndRoles(token, "SUPER_ADMIN");
+            	if (!userOptional.isPresent()) {
             	setException(httpServletResponse);
                 return;
+                }
             }
             User user = userOptional.get();
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, token);

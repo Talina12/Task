@@ -21,6 +21,6 @@ public class CustomWebSecurityConfigurerAdapter
         auth.antMatchers("/v2/api-docs", "/swagger-resources/**", "/csrf","/login").permitAll();
         http.addFilterBefore(
                 new TokenCheckFilter(usersRepository), BasicAuthenticationFilter.class);
-        http.addFilterAfter(new SuppliersFilter(usersRepository), TokenCheckFilter.class );
+        http.addFilterAfter(new AdminFilter(usersRepository), TokenCheckFilter.class );
     }
 }
