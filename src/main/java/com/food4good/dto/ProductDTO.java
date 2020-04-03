@@ -1,8 +1,6 @@
 package com.food4good.dto;
 
 import com.food4good.database.entities.Supplier;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.food4good.config.GlobalProperties;
 import com.food4good.database.entities.Products;
 import com.google.common.base.Strings;
@@ -57,7 +55,8 @@ public class ProductDTO extends BaseDTO {
         return products;
     }
     private static String calculateDiscount(Products dish) {
-        double origPrice=Double.valueOf(dish.getOrigPrice());
+        if(!Strings.isNullOrEmpty(dish.getOrigPrice())) {
+    	double origPrice=Double.valueOf(dish.getOrigPrice());
         double finalPrice;
         if(Strings.isNullOrEmpty(dish.getFixPrice()))
         {
@@ -67,5 +66,7 @@ public class ProductDTO extends BaseDTO {
             finalPrice=Double.valueOf(dish.getFixPrice());
         }
         return String.valueOf((100*finalPrice/origPrice));
+        }
+        else return "";
     }
 }

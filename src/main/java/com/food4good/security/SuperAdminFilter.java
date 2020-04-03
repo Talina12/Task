@@ -1,4 +1,3 @@
-
 package com.food4good.security;
 
 import java.io.IOException;
@@ -17,26 +16,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.food4good.config.BadRequestException;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.google.common.base.Strings;
 
-public class AdminFilter extends GenericFilterBean{
-
-	UsersRepository usersRepository;
+public class SuperAdminFilter extends GenericFilterBean{
+UsersRepository usersRepository;
 	
-	public AdminFilter(UsersRepository usersRepository) {
+	public SuperAdminFilter(UsersRepository usersRepository) {
 		this.usersRepository = usersRepository;
 	}
+	
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("in AdminFilter");
+		System.out.println("in SuperAdminFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         if (!isSkipMethod(httpRequest)) {
@@ -47,14 +44,13 @@ public class AdminFilter extends GenericFilterBean{
             	setException(httpServletResponse);
                 return;
             }
-            Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, "ADMIN");
+            Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, "SUPER_ADMIN");
             if (!userOptional.isPresent()) {
             	setException(httpServletResponse);
                 return;
                 }
             
             User user = userOptional.get();
-            if (user.getSupplier() == null) throw new BadRequestException("there is no supplier associated with the user");
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -71,14 +67,16 @@ public class AdminFilter extends GenericFilterBean{
 
     private boolean isSkipMethod(HttpServletRequest httpRequest) {
         String uri = httpRequest.getRequestURI(); 
-        List<String> listOfFreeUri = Arrays.asList("swagger", "login", "api-docs","error", "superAdmin");
+        List<String> listOfFreeUri = Arrays.asList("swagger", "login", "api-docs","error");
         boolean match = listOfFreeUri.stream().anyMatch(s -> uri.contains(s));
         return match;
     }
     
     private boolean isCheckedMethod(HttpServletRequest httpRequest) {
     	String uri = httpRequest.getRequestURI();
-    	if (uri.contains("admin")) return true;
+    	if (uri.contains("superAdmin")) return true;
     	else return false;
     }
 }
+
+

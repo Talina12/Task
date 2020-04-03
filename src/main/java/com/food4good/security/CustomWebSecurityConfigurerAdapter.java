@@ -22,5 +22,6 @@ public class CustomWebSecurityConfigurerAdapter
         http.addFilterBefore(
                 new TokenCheckFilter(usersRepository), BasicAuthenticationFilter.class);
         http.addFilterAfter(new AdminFilter(usersRepository), TokenCheckFilter.class );
+        http.addFilterAfter(new SuperAdminFilter(usersRepository), AdminFilter.class);
     }
 }

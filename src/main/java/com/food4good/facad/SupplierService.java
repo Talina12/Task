@@ -14,8 +14,10 @@ import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.*;
 import com.food4good.dto.geocoding.GeoPoint;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class SupplierService {
     SupplierRepository supplierRepository;
@@ -30,15 +33,17 @@ public class SupplierService {
     UsersRepository usersRepository;
     AddressService addressService;
     ProductsRepository productsRepository;
-    @Autowired
     UsersService usersService;
 
-    public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, UsersRepository usersRepository, AddressService addressService,ProductsRepository productsRepository) {
+    public SupplierService(SupplierRepository supplierRepository, SupplierRateRepository suppliersRateRepository, 
+    		               UsersRepository usersRepository, AddressService addressService,
+    		               ProductsRepository productsRepository, UsersService usersService) {
         this.supplierRepository = supplierRepository;
         this.usersRepository = usersRepository;
         this.supplierRateRepository = suppliersRateRepository;
         this.addressService = addressService;
         this.productsRepository=productsRepository;
+        this.usersService = usersService;
     }
 
     public SupplierDTO getById(Long supplierId) throws Exception {
@@ -138,7 +143,7 @@ public class SupplierService {
     }
 
 	public List<SupplierInfoDTO> getActiveInfo() throws Exception {
-		List<Supplier> all = supplierRepository.findByIsActive(true);
+		List<Supplier> all = supplierRepository.findByIsActiveTrue();
         List<SupplierInfoDTO> supplierInfoDTOS = new ArrayList<>();
         for (Supplier supplier : all) {
             SupplierInfoDTO supplierInfoDTO = SupplierInfoDTO.convertFromEntity(supplier);
@@ -147,15 +152,50 @@ public class SupplierService {
         return supplierInfoDTOS;
 	}
 
-	public void updateSupplier(Long supplierId, SupplierPermanentDTO suplierPermanentDTO) throws Exception {
-		Supplier supplier =supplierRepository.findById(supplierId).orElseThrow(() -> new EntityNotFoundException("supplier not found"));
-		User autorizedUser = usersService.getByToken();
-		if (autorizedUser.getRoles().equals("ADMIN"))
-			if (autorizedUser.getSupplier().getId() != supplierId)
-				throw new BadRequestException("supplier is not belong to autorized user");
-		supplier.setAddress(suplierPermanentDTO.getAddress());
-		supplier.setName(suplierPermanentDTO.getName());
-		supplier.setOpenHours(suplierPermanentDTO.getOpenHours());
-		supplierRepository.save(supplier);
+	public void updateSupplier(Long supplierId, SupplierPermanentDTO supplierPermanentDTO) throws Exception {
+		Supplier supplierToUpdate = supplierRepository.findById(supplierId).orElseThrow(() -> new BadRequestException("supplier not found"));
+		supplierToUpdate.setAddress(supplierPermanentDTO.getAddress());
+		supplierToUpdate.setName(supplierPermanentDTO.getName());
+		supplierToUpdate.setOpenHours(supplierPermanentDTO.getOpenHours());
+		supplierRepository.save(supplierToUpdate);
+	}
+
+	public void updateProduct(Supplier supplier, ProductDTO productDTO) throws Exception {
+		Products product = productsRepository.findById(productDTO.getId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
+		if (product.getId() != supplier.getId()) {
+			log.debug("the product does not belong to supplier");
+			throw new BadRequestException("the product does not belong to supplier");
+		};
+		
+		int orderedDishes = product.getAmount()-product.getRealAmount();
+		int realAmount = productDTO.getAmount()-orderedDishes;
+		if (realAmount < 0)realAmount = 0;
+		
+		product.setAmount(productDTO.getAmount());
+		product.setFixPrice(productDTO.getFixPrice());
+		product.setMaxPrice(productDTO.getMaxPrice());
+		product.setMinPrice(productDTO.getMinPrice());
+		product.setName(productDTO.getDishName());
+		product.setOrigPrice(productDTO.getOriginalPrice());
+		product.setDescription(productDTO.getDishDescription());
+		product.setRealAmount(realAmount);
+		productsRepository.save(product);
+	}
+	
+	public SupplierInfoDTO getSupplierInfo(Long supplierId) throws JsonProcessingException  {
+		Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new BadRequestException("supplier not found"));
+		return SupplierInfoDTO.convertFromEntity(supplier);
+	}
+
+	public void updateProduct(ProductDTO productDTO) {
+		Products product = productsRepository.findById(productDTO.getId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
+		product.setAmount(productDTO.getAmount());
+		product.setFixPrice(productDTO.getFixPrice());
+		product.setMaxPrice(productDTO.getMaxPrice());
+		product.setMinPrice(productDTO.getMinPrice());
+		product.setName(productDTO.getDishName());
+		product.setOrigPrice(productDTO.getOriginalPrice());
+		product.setRealAmount(productDTO.getAmount());
+		productsRepository.save(product);
 	}
 }

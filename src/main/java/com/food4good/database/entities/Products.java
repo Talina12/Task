@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import org.springframework.lang.NonNull;
+
 @Entity
 @Table(schema = "food4good", name = "products")
 @Getter
