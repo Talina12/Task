@@ -125,9 +125,4 @@ public class UsersService {
 		return response;
 	}
 
-	public void createUser(UsersDTO usersDTO) {
-		Supplier supplier=supplierRepository.findById(usersDTO.getSupplierId()).orElseThrow(() -> new EntityNotFoundException(" supplier not found"));
-		User user=UsersDTO.convertToEntity(usersDTO,supplier);
-		usersRepository.save(user);
-	}
 }

@@ -1,11 +1,13 @@
 package com.food4good.controllers;
 
 import com.food4good.database.entities.User;
+import com.food4good.dto.AdminRegisterRequestDTO;
+import com.food4good.dto.LoginResponseDTO;
 import com.food4good.dto.UsersDTO;
 import com.food4good.facad.UsersService;
-import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +34,9 @@ public class UsersControllers {
     public List<UsersDTO> getAllUsers() throws Exception {
         return usersService.getAll();
     }
-    @PostMapping("/create")
-    public ResponseEntity<Object> createUser(@Validated @RequestBody UsersDTO usersDTO) throws Exception{
-       usersService.createUser(usersDTO);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @PostMapping(value= "/registration")
+    @CrossOrigin
+    public ResponseEntity<LoginResponseDTO> registerAdmin(@RequestBody @NonNull AdminRegisterRequestDTO adminReqestDTO) throws Exception {
+        return ResponseEntity.ok(usersService.registerAdmin(adminReqestDTO));
     }
 }

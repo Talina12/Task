@@ -43,11 +43,7 @@ public class SuperAdminController {
 		this.supplierRepository = supplierRepository;
 	}
 
-	@PostMapping(value= "/registration")
-    @CrossOrigin
-    public ResponseEntity<LoginResponseDTO> registerAdmin(@RequestBody @NonNull AdminRegisterRequestDTO adminReqestDTO) throws Exception {
-    		return ResponseEntity.ok(usersService.registerAdmin(adminReqestDTO));
-    }
+
 	
 	@GetMapping("/allSuppliers")
 	public ResponseEntity<List<SupplierInfoDTO>> getAllSuppliers() throws Exception{
