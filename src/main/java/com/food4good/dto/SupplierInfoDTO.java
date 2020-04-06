@@ -27,7 +27,7 @@ public class SupplierInfoDTO {
         supplierInfoDTO.getSupplierDTO().setCreatedAt(supplier.getCreatedAt().toString());
         supplierInfoDTO.getSupplierDTO().setUpdatedAt(supplier.getUpdatedAt().toString());
         supplierInfoDTO.getSupplierDTO().setOpenHours(objectMapper.readValue(supplier.getOpenHours(), Map.class));
-        supplierInfoDTO.getSupplierDTO().setActive(supplier.isActive());
+        supplierInfoDTO.getSupplierDTO().setActive(supplier.getIsActive());
         List<ProductDTO> productDTOList = supplier.getProducts().stream().map(ProductDTO::convertFromEntity).collect(Collectors.toList());
         supplierInfoDTO.setProductDTOList(productDTOList);
         return supplierInfoDTO;
@@ -41,7 +41,7 @@ public class SupplierInfoDTO {
         supplier.setLatetude(supplierInfoDTO.getSupplierDTO().getLatetude());
         supplier.setLongtitude(supplierInfoDTO.getSupplierDTO().getLongtitude());
         supplier.setName(supplierInfoDTO.getSupplierDTO().getSupplierName());
-        supplier.setActive(supplierInfoDTO.getSupplierDTO().isActive());
+        supplier.setIsActive(supplierInfoDTO.getSupplierDTO().isActive());
         String openHours = objectMapper.writeValueAsString(supplierInfoDTO.getSupplierDTO().getOpenHours());
         supplier.setOpenHours(openHours);
         return supplier;

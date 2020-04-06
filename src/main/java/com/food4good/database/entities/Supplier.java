@@ -49,7 +49,7 @@ public class Supplier extends  AbstractEntity{
     private Set<SupplierFilters> filters = new HashSet<>();
     
     @Column (name="is_Active")
-    private boolean isActive;
+    private Boolean isActive;
     
     public Supplier() {
     }

@@ -6,12 +6,7 @@ import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
-import com.food4good.dto.AdminRegisterRequestDTO;
-import com.food4good.dto.LoginReqestDTO;
-import com.food4good.dto.LoginResponseDTO;
-import com.food4good.dto.NotificationDTO;
-import com.food4good.dto.NotificationRequestDTO;
-import com.food4good.dto.AdminRequestDTO;
+import com.food4good.dto.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -96,7 +92,7 @@ public class UsersService {
 		userToSave.setEmail(adminReqestDTO.getEmail());
 		userToSave.setName(adminReqestDTO.getName());
 		userToSave.setPassword(adminReqestDTO.getPassword());
-		userToSave.setPhone_number(adminReqestDTO.getPhone());
+		userToSave.setPhoneNumber(adminReqestDTO.getPhone());
 		userToSave.setRoles("ADMIN");
 		String uuid = String.valueOf(UUID.randomUUID());
 		userToSave.setToken(uuid);
@@ -117,5 +113,21 @@ public class UsersService {
 		requestDTO.setPriority("normal");
 		requestDTO.getNotification().setIcon("myicon");
 	    request.bodyValue(requestDTO).retrieve().bodyToMono(Object.class).block();
+	}
+
+	public List<UsersDTO> getAll() {
+		List<User> fromDB= usersRepository.findAll();
+		List<UsersDTO> response=new ArrayList<>();
+		for(User user:fromDB)
+		{
+			response.add(UsersDTO.convertFromEntity(user));
+		}
+		return response;
+	}
+
+	public void createUser(UsersDTO usersDTO) {
+		Supplier supplier=supplierRepository.findById(usersDTO.getSupplierId()).orElseThrow(() -> new EntityNotFoundException(" supplier not found"));
+		User user=UsersDTO.convertToEntity(usersDTO,supplier);
+		usersRepository.save(user);
 	}
 }

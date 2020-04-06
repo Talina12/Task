@@ -22,8 +22,9 @@ public class User extends  AbstractEntity{
     @Column
     private String name;
 
-    @Column
-    private String phone_number;
+    @Column(name = "phone_number")
+
+    private String phoneNumber;
 
     @Column
     private String udid;

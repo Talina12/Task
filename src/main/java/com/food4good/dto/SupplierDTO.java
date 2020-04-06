@@ -34,7 +34,7 @@ public class SupplierDTO extends BaseDTO{
         supplierDTO.setSupplierName(supplier.getName());
         supplierDTO.setRates(supplier.getRates());
         supplierDTO.setDisplayOrder(supplier.getDisplayOrder());
-        supplier.setActive(supplier.isActive());
+        supplierDTO.setActive(supplier.getIsActive());
         return supplierDTO;
     }
 }

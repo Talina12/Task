@@ -58,7 +58,7 @@ public class SuperAdminController {
 	public ResponseEntity<List<SupplierInfoDTO>> getActiveSuppliers() throws Exception{
 		return ResponseEntity.ok(supplierService.getActiveInfo());
 	}
-	
+
 	@PostMapping("/update/{supplierId}")
 	public ResponseEntity<Object>	updateSupplier(@PathVariable("supplierId") @Valid @NotNull Long supplierId, @Validated @NonNull @RequestBody SupplierPermanentDTO supplierPermanentDTO) throws Exception{
 	    supplierService.updateSupplier(supplierId, supplierPermanentDTO);
@@ -69,5 +69,10 @@ public class SuperAdminController {
 	public ResponseEntity<Object> updateProducts(@PathVariable("productId") @Valid @NonNull Long productId, @Validated @NonNull @RequestBody ProductDTO productDTO) throws Exception{
 		supplierService.updateProduct(productDTO);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+	@CrossOrigin
+	@PostMapping("/supplier/create")
+	public ResponseEntity<SupplierInfoDTO> createSuppleir(@Validated @RequestBody SupplierInfoDTO supplierInfoDTO) throws Exception {
+		return ResponseEntity.ok(supplierService.createSupplier(supplierInfoDTO));
 	}
 }

@@ -52,7 +52,7 @@ public class TokenCheckFilter extends GenericFilterBean {
                     setException(httpServletResponse);
                     return;
                 }
-                Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, "USER");
+                Optional<User> userOptional = usersRepository.findByTokenAndRoles(token, getRole());
                 if (!userOptional.isPresent()) {
                     setException(httpServletResponse);
                     return;
@@ -65,19 +65,26 @@ public class TokenCheckFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
+    public String getRole() {
+        return "USER";
+    }
 
 
-    private void setException(HttpServletResponse httpServletResponse) throws IOException {
+    public void setException(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         PrintWriter writer = httpServletResponse.getWriter();
         writer.write("Authetication failed");
         writer.flush();
     }
 
-    private boolean isSkipMethod(HttpServletRequest httpRequest) {
+    protected boolean isSkipMethod(HttpServletRequest httpRequest) {
         String uri = httpRequest.getRequestURI();
-        List<String> listOfFreeUri = Arrays.asList("swagger", "login", "api-docs","error", "admin", "superAdmin");
+        List<String> listOfFreeUri = getSkipMethodList();
         boolean match = listOfFreeUri.stream().anyMatch(s -> uri.contains(s));
         return match;
+    }
+
+    public List<String> getSkipMethodList() {
+       return Arrays.asList("swagger", "login", "api-docs","error", "admin", "superAdmin");
     }
 }
