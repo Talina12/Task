@@ -36,6 +36,7 @@ public class UsersDTO {
         usersDTO.setRoles(user.getRoles());
         if(user.getSupplier()!=null) {
             usersDTO.setSupplier(SupplierDTO.convertFromEntity(user.getSupplier()));
+            usersDTO.setSupplierId(usersDTO.getSupplier().getId());
         }
         return usersDTO;
     }

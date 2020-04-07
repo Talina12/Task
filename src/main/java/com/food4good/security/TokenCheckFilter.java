@@ -3,7 +3,6 @@ package com.food4good.security;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.google.common.base.Strings;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
