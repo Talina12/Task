@@ -3,6 +3,7 @@ package com.food4good.security;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.google.common.base.Strings;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,6 +62,7 @@ public class TokenCheckFilter extends GenericFilterBean {
                 User user = userOptional.get();
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user, token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                request.setAttribute("isFilterPassed",true);
             }
         }
         chain.doFilter(request, response);
@@ -81,7 +84,8 @@ public class TokenCheckFilter extends GenericFilterBean {
         String uri = httpRequest.getRequestURI();
         List<String> listOfFreeUri = getSkipMethodList();
         boolean match = listOfFreeUri.stream().anyMatch(s -> uri.contains(s));
-        return match;
+        boolean isFillterPassed= httpRequest.getAttribute("isFilterPassed")!=null?(boolean)httpRequest.getAttribute("isFilterPassed"):false;
+        return match||isFillterPassed;
     }
 
     public List<String> getSkipMethodList() {

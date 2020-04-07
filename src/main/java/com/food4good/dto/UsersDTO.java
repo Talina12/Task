@@ -34,7 +34,9 @@ public class UsersDTO {
         usersDTO.setPassword(user.getPassword());
         usersDTO.setPhoneNumber(user.getPhoneNumber());
         usersDTO.setRoles(user.getRoles());
-        usersDTO.setSupplier(SupplierDTO.convertFromEntity(user.getSupplier()));
+        if(user.getSupplier()!=null) {
+            usersDTO.setSupplier(SupplierDTO.convertFromEntity(user.getSupplier()));
+        }
         return usersDTO;
     }
 
