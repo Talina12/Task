@@ -30,6 +30,7 @@ import com.food4good.facad.UsersService;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/superAdmin")
 public class SuperAdminController {
 	UsersService usersService;
@@ -71,4 +72,5 @@ public class SuperAdminController {
 	public ResponseEntity<SupplierInfoDTO> createSuppleir(@Validated @RequestBody SupplierInfoDTO supplierInfoDTO) throws Exception {
 		return ResponseEntity.ok(supplierService.createSupplier(supplierInfoDTO));
 	}
+
 }

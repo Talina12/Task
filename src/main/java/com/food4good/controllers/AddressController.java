@@ -15,7 +15,6 @@ import com.food4good.dto.geocoding.GeoPoint;
 import com.food4good.facad.AddressService;
 
 @RestController
-@RequestMapping("/address")
 public class AddressController {
 	
 	private AddressService addressService;
@@ -24,22 +23,22 @@ public class AddressController {
 		this.addressService=addressService;
 	}
 	
-	@PostMapping (value="/validation")
+	@PostMapping (value={"admin/address/validation","superAdmin/address/validation"})
 	@CrossOrigin
     public ResponseEntity<CoordinatesResponse> getCoordinates(@Validated @RequestBody @NonNull CoordinatesRequest coordinatesRequest) throws EntityNotFoundException
-	{   
+	{
 		CoordinatesResponse	result;
-		result = addressService.getCoordinates(coordinatesRequest);	
+		result = addressService.getCoordinates(coordinatesRequest);
 		return(ResponseEntity.ok(result));
 	}
 	
-	@PostMapping (value="/destination")
+	@PostMapping (value="/address/destination")
     public ResponseEntity<HashMap<Long,String>> getDestination(@Validated @RequestBody @NonNull DestinationRequest destinationRequest) throws Exception
 	{
         return ResponseEntity.ok(addressService.getDestination(destinationRequest));
 	}
 
-	@PostMapping (value="/single_destination")
+	@PostMapping (value="/address/single_destination")
 	public ResponseEntity<String> getDestination(@Validated @RequestBody @NonNull SingleDestinationRequest singleDestinationRequest) throws Exception{
 		return ResponseEntity.ok(addressService.getDestination(singleDestinationRequest));
 	}
