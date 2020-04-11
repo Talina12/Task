@@ -1,5 +1,6 @@
 package com.food4good.security;
 
+import com.food4good.config.Roles;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.UsersRepository;
 import com.google.common.base.Strings;
@@ -68,7 +69,7 @@ public class TokenCheckFilter extends GenericFilterBean {
     }
 
     public String getRole() {
-        return "USER";
+        return Roles.USER.toString();
     }
 
 

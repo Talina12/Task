@@ -1,6 +1,7 @@
 package com.food4good.controllers;
 
 import com.food4good.config.GlobalProperties;
+import com.food4good.config.Roles;
 import com.food4good.dto.LoginReqestDTO;
 import com.food4good.dto.LoginResponseDTO;
 import com.food4good.dto.AdminRequestDTO;
@@ -31,12 +32,12 @@ public class LoginController {
     @PostMapping(value= "/superAdmin")
     @CrossOrigin
     public ResponseEntity<LoginResponseDTO> loginSuperAdmin(@RequestBody @NonNull AdminRequestDTO superAdminRequest){
-    	return ResponseEntity.ok(usersService.loginAdmin(superAdminRequest,"SUPER_ADMIN"));
+    	return ResponseEntity.ok(usersService.loginAdmin(superAdminRequest, Roles.SUPER_ADMIN.toString()));
     }
     
     @PostMapping("/admin")
     public ResponseEntity<LoginResponseDTO> loginAdmin(@RequestBody @NonNull AdminRequestDTO adminRequest){
-    	return ResponseEntity.ok(usersService.loginAdmin(adminRequest, "ADMIN"));
+    	return ResponseEntity.ok(usersService.loginAdmin(adminRequest, Roles.ADMIN.toString()));
     }
     
     @PostMapping("/test")

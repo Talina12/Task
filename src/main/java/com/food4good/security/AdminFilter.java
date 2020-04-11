@@ -1,6 +1,7 @@
 
 package com.food4good.security;
 
+import com.food4good.config.Roles;
 import com.food4good.database.repositories.UsersRepository;
 
 import java.util.Arrays;
@@ -17,7 +18,7 @@ public class AdminFilter extends TokenCheckFilter{
 
     @Override
     public String getRole() {
-        return "ADMIN";
+        return Roles.ADMIN.toString();
     }
 
     @Override

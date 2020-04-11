@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.food4good.config.BadRequestException;
 import com.food4good.config.GlobalProperties;
 import com.food4good.dto.*;
+import com.food4good.factory.AllOrdersFactory;
+import com.food4good.factory.OrderListHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.food4good.database.entities.OrderProducts;
@@ -147,10 +149,14 @@ public class OrdersService {
 		order.getProducts().clear();
 	}
 
-	public List<OrderDTO> getAll() {
-		ArrayList<OrderDTO> ordersInfo = new ArrayList<OrderDTO>();
-		ordersReppository.findAll().forEach((o)->ordersInfo.add(OrderDTO.convertFromEntity(o)));
-		return ordersInfo;
+	public List<OrderDTO> getAll(User user) {
+		List<OrderDTO> ordersInfoList = new ArrayList<OrderDTO>();
+		AllOrdersFactory allOrdersFactory=new AllOrdersFactory(ordersReppository,orderProductsRepository,productsRepository);
+		OrderListHandler orderListHandler=allOrdersFactory.getOrderListHandler(user.getRoles());
+		if(orderListHandler!=null) {
+			ordersInfoList = orderListHandler.getOrderList(user);
+		}
+		return ordersInfoList;
 	}
 	
 	public Long getUndelivered(User user) {

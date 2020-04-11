@@ -2,6 +2,7 @@ package com.food4good.facad;
 
 import com.food4good.config.BadRequestException;
 import com.food4good.config.NotificationsConfig;
+import com.food4good.config.Roles;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.SupplierRepository;
@@ -54,7 +55,7 @@ public class UsersService {
     public LoginResponseDTO loginUser(LoginReqestDTO loginReqestDTO) {
         LoginResponseDTO loginResponseDTO=new LoginResponseDTO();
         User user;
-        Optional<User> optionalUser = usersRepository.findByTokenAndRoles(loginReqestDTO.getToken(), "USER");
+        Optional<User> optionalUser = usersRepository.findByTokenAndRoles(loginReqestDTO.getToken(), Roles.USER.toString());
         if(optionalUser.isPresent())
         {
             user=optionalUser.get();
@@ -62,7 +63,7 @@ public class UsersService {
         else
         {
             User userToSave =new User();
-            userToSave.setRoles("USER");
+            userToSave.setRoles(Roles.USER.toString());
             userToSave.setToken(loginReqestDTO.getToken());
             userToSave.setUdid(loginReqestDTO.getUdid());
             user=usersRepository.save(userToSave);
@@ -75,7 +76,7 @@ public class UsersService {
 	public LoginResponseDTO registerAdmin(AdminRegisterRequestDTO adminReqestDTO) {
 		User user;
 		Supplier supplier = supplierRepository.findById(adminReqestDTO.getSuplierId()).orElseThrow(() -> new EntityNotFoundException(" supplier not found"));
-		Optional<User> optionalUser = usersRepository.findByEmailAndRoles(adminReqestDTO.getEmail(), "ADMIN");
+		Optional<User> optionalUser = usersRepository.findByEmailAndRoles(adminReqestDTO.getEmail(), Roles.ADMIN.toString());
 		if (optionalUser.isPresent()) throw new BadRequestException("a user with such an email exists");
 		else user=saveUser(adminReqestDTO, supplier);
 		return new LoginResponseDTO(user);
@@ -93,7 +94,7 @@ public class UsersService {
 		userToSave.setName(adminReqestDTO.getName());
 		userToSave.setPassword(adminReqestDTO.getPassword());
 		userToSave.setPhoneNumber(adminReqestDTO.getPhone());
-		userToSave.setRoles("ADMIN");
+		userToSave.setRoles(Roles.ADMIN.toString());
 		String uuid = String.valueOf(UUID.randomUUID());
 		userToSave.setToken(uuid);
 		userToSave.setUdid(uuid);

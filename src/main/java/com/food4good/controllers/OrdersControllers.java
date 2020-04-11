@@ -2,14 +2,13 @@
 package com.food4good.controllers;
 
 import com.food4good.database.entities.User;
-import com.food4good.dto.OrderDTO;
-import com.food4good.dto.UpdateOrderRequest;
 import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
+import com.food4good.dto.OrderDTO;
+import com.food4good.dto.UpdateOrderRequest;
 import com.food4good.facad.OrderReport;
 import com.food4good.facad.OrderStatus;
 import com.food4good.facad.OrdersService;
-
 import com.food4good.facad.UsersService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -73,15 +72,16 @@ public class OrdersControllers {
     	
     }
     
-    @GetMapping("/all")
+    @GetMapping({"/all","/superAdmin/all","admin/all"})
     @CrossOrigin
-    public ResponseEntity<List<OrderDTO>> getAllOrders(){
-    	return ResponseEntity.ok(ordersService.getAll());
-    	}
+    public ResponseEntity<List<OrderDTO>> getAllOrders() throws Exception {
+        User user = usersService.getByToken();
+        List<OrderDTO> orderDTOList=ordersService.getAll(user);
+    	return ResponseEntity.ok(orderDTOList);
+    }
 
     @GetMapping("/undelivered")
     public ResponseEntity<Long> getUndeliveredOrders() throws Exception{
-
     	User user = usersService.getByToken();
     	return ResponseEntity.ok(ordersService.getUndelivered(user));
     }

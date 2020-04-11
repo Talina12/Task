@@ -1,9 +1,7 @@
 package com.food4good.database.repositories;
 
-import com.food4good.database.entities.User;
+import com.food4good.database.entities.*;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.food4good.database.entities.Orders;
-import com.food4good.database.entities.Supplier;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +16,8 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     Optional<Orders> findByUser(User user);
     Optional<Orders> findByIdAndUser(long orderId,User user);
     List <Orders> findAllByUser(User user);
+    List <Orders> findByProductsIn(List<OrderProducts> products);
+
     
     
 }

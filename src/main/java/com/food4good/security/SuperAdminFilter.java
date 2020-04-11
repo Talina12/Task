@@ -1,5 +1,6 @@
 package com.food4good.security;
 
+import com.food4good.config.Roles;
 import com.food4good.database.repositories.UsersRepository;
 
 import java.util.Arrays;
@@ -14,7 +15,7 @@ UsersRepository usersRepository;
 
     @Override
     public String getRole() {
-        return "SUPER_ADMIN";
+        return Roles.SUPER_ADMIN.toString();
     }
 
     @Override
