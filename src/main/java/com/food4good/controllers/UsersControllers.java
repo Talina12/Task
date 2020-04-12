@@ -31,6 +31,7 @@ public class UsersControllers {
         return usersService.getById(userId);
     }
     @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @CrossOrigin
     public List<UsersDTO> getAllUsers() throws Exception {
         return usersService.getAll();
     }
