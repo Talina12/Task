@@ -17,6 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/superAdmin/users")
+@CrossOrigin
 public class UsersControllers {
     private final UsersService usersService;
     
@@ -31,12 +32,10 @@ public class UsersControllers {
         return usersService.getById(userId);
     }
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    @CrossOrigin
     public List<UsersDTO> getAllUsers() throws Exception {
         return usersService.getAll();
     }
     @PostMapping(value= "/registration")
-    @CrossOrigin
     public ResponseEntity<LoginResponseDTO> registerAdmin(@RequestBody @NonNull AdminRegisterRequestDTO adminReqestDTO) throws Exception {
         return ResponseEntity.ok(usersService.registerAdmin(adminReqestDTO));
     }
