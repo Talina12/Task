@@ -1,20 +1,16 @@
 package com.food4good.facad;
 
 import com.food4good.config.BadRequestException;
-import com.food4good.config.NotificationsConfig;
+
 import com.food4good.config.Roles;
+
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import javax.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
@@ -26,17 +22,10 @@ import java.util.UUID;
 public class UsersService {
     UsersRepository usersRepository;
     SupplierRepository supplierRepository;
-    private WebClient client;
-    private NotificationsConfig notifConfig;
     
-    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository, NotificationsConfig notifConfig) {
+    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository) {
         this.usersRepository = usersRepository;
         this.supplierRepository = supplierRepository;
-        this.notifConfig = notifConfig;
-        this.client = WebClient
-				  .builder()
-				  .baseUrl(notifConfig.getUrl())
-				  .build();
     }
 
     public User getById(Long userId)  {
@@ -100,20 +89,6 @@ public class UsersService {
 		userToSave.setUdid(uuid);
 		userToSave.setSupplier(supplier);
 		return usersRepository.save(userToSave);
-	}
-
-	public void sendNotifications(List<NotificationDTO> notificationList) {
-		WebClient.RequestBodySpec request;
-		request = client.post().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				               .header(HttpHeaders.AUTHORIZATION, notifConfig.getKey());
-		notificationList.forEach(n->send(n,request));
-	}
-	
-	private void send(NotificationDTO notification, WebClient.RequestBodySpec request) {
-		NotificationRequestDTO requestDTO = new NotificationRequestDTO(notification);
-		requestDTO.setPriority("normal");
-		requestDTO.getNotification().setIcon("myicon");
-	    request.bodyValue(requestDTO).retrieve().bodyToMono(Object.class).block();
 	}
 
 	public List<UsersDTO> getAll() {

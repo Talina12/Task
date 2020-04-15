@@ -20,7 +20,7 @@ UsersRepository usersRepository;
 
     @Override
     public List<String> getSkipMethodList() {
-        return Arrays.asList("swagger", "login", "api-docs","error", "admin");
+        return Arrays.asList("swagger", "login", "api-docs","error", "admin", "test");
     }
 }
 

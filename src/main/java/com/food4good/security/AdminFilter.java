@@ -23,6 +23,6 @@ public class AdminFilter extends TokenCheckFilter{
 
     @Override
     public List<String> getSkipMethodList() {
-        return Arrays.asList("swagger", "login", "api-docs","error", "superAdmin");
+        return Arrays.asList("swagger", "login", "api-docs","error", "superAdmin", "test");
     }
 }
