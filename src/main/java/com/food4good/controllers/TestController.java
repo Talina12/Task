@@ -32,7 +32,8 @@ public class TestController {
 		ArrayList <User> usersToSubscribe = new ArrayList<User>();
 		usersToSubscribe.add(usersRepository.findById((long) 20).get());
 		usersToSubscribe.add(usersRepository.findById((long) 3).get());
-		return pushNotificationService.subscribeUsers(usersToSubscribe, "/topics/test2", true);
+		pushNotificationService.subscribeUsers(usersToSubscribe, "test1", true);
+		return pushNotificationService.subscribeUsers(usersToSubscribe, "test2", true);
 	}
 	
 	@PostMapping("/unsubscribe")
@@ -40,7 +41,7 @@ public class TestController {
 		ArrayList <User> usersToSubscribe = new ArrayList<User>();
 		usersToSubscribe.add(usersRepository.findById((long) 20).get());
 		usersToSubscribe.add(usersRepository.findById((long) 3).get());
-		return pushNotificationService.subscribeUsers(usersToSubscribe, "/topics/test2", false);
+		return pushNotificationService.subscribeUsers(usersToSubscribe, "test2", false);
 	}
 	
 	@PostMapping("/send")

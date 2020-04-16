@@ -5,7 +5,9 @@ import com.food4good.config.BadRequestException;
 import com.food4good.config.Roles;
 
 import com.food4good.database.entities.Supplier;
+import com.food4good.database.entities.SupplierRate;
 import com.food4good.database.entities.User;
+import com.food4good.database.repositories.SupplierRateRepository;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.*;
@@ -17,15 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersService {
     UsersRepository usersRepository;
     SupplierRepository supplierRepository;
+    SupplierRateRepository supplierRateRepository;
     
-    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository) {
+    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository, SupplierRateRepository supplierRateRepository) {
         this.usersRepository = usersRepository;
         this.supplierRepository = supplierRepository;
+        this.supplierRateRepository = supplierRateRepository;
     }
 
     public User getById(Long userId)  {
@@ -99,6 +104,12 @@ public class UsersService {
 			response.add(UsersDTO.convertFromEntity(user));
 		}
 		return response;
+	}
+	
+	public List<Supplier> getFavoriteSuppliers(User user){
+		List<SupplierRate> suppliersRate = supplierRateRepository.findByUser(user);
+		List<Supplier> suppliers = suppliersRate.stream().map(SupplierRate::getSupplier).collect(Collectors.toList());
+		return suppliers;
 	}
 
 }

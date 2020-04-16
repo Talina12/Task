@@ -1,17 +1,23 @@
 package com.food4good.facad;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
-
 import com.food4good.config.NotificationsConfig;
+import com.food4good.database.entities.Preference;
+import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
+import com.food4good.database.entities.UsersPreference;
+import com.food4good.database.repositories.PreferenceRepository;
+import com.food4good.database.repositories.UserPreferenceRepository;
 import com.food4good.dto.SubscribeUsersDTO;
 import com.food4good.dto.notifications.AppInstanceInfoDTO;
 import com.food4good.dto.notifications.Error;
@@ -27,12 +33,21 @@ public class PushNotificationService {
   
 	private WebClient client;
     private NotificationsConfig notifConfig;
+    private UserPreferenceRepository userPreferenceRepository;
+  //  private PreferenceRepository preferenceRepository;
+    private UsersService usersService;
+    private Preference preference;
     
-    public PushNotificationService(NotificationsConfig notificationsConfig) {
+    public PushNotificationService(NotificationsConfig notificationsConfig, UserPreferenceRepository userPreferenceRepository, 
+    		                       PreferenceRepository preferenceRepository, UsersService usersService) throws Exception {
     	this.client = WebClient
 				  .builder()
 				  .build();
     	this.notifConfig = notificationsConfig;
+    	this.userPreferenceRepository = userPreferenceRepository;
+  //  	this.preferenceRepository = preferenceRepository;
+    	this.usersService = usersService;
+    	this.preference = preferenceRepository.findById(notifConfig.getPreferenceId()).orElseThrow(() -> new Exception("Push notification preference not found"));
     }
     
 	public void sendNotifications(List<NotificationDTO> notificationList) {
@@ -53,6 +68,7 @@ public class PushNotificationService {
 		if ((usersToSubscribe == null) || (usersToSubscribe.size() == 0)) {
 			log.debug("error in subscribeUsers(List <User> usersToSubscribe, String topicName) null or empty argument");
 			throw new Exception("there is no users in usersToSubscribe");}
+		topicName = notifConfig.getTopicsString().concat(topicName);
 		String requestUrl = (isSubscribe) ? notifConfig.getSubscribeUrl() : notifConfig.getUnsubscribeUrl();
 		WebClient.RequestBodySpec request;
 		request = client.post().uri(requestUrl).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -93,6 +109,45 @@ public class PushNotificationService {
 		String requestUrl = notifConfig.getInstanceInfo() + (user.getToken());
 		AppInstanceInfoDTO appInstanceInfoDTO = client.get().uri(requestUrl+ "?details=true").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				         .header(HttpHeaders.AUTHORIZATION, notifConfig.getKey()).retrieve().bodyToMono(AppInstanceInfoDTO.class).block();
-		return appInstanceInfoDTO.getRel().getTopics();
+		if (appInstanceInfoDTO.getRel() == null) return null;
+		else return appInstanceInfoDTO.getRel().getTopics();
+	}
+
+	public void unsubscribeSingleUser(User user) throws Exception {
+		saveUsersChoice(user, false);
+		Hashtable<String, Object> usersTopics = getUserTopics(user);
+		if (usersTopics == null) return;
+		ArrayList<User> usersToUnsubscribe = new ArrayList<User>();
+		usersToUnsubscribe.add(user);
+		log.info(usersTopics.toString());
+		Set<String> topics = usersTopics.keySet();
+		for (String topic : topics)
+			subscribeUsers(usersToUnsubscribe, notifConfig.getTopicsString().concat(topic), false);
+	}
+
+	private void saveUsersChoice(User user, boolean choice) {
+		UsersPreference usersPreference;
+		Optional<UsersPreference> optionalUsersPreference = userPreferenceRepository.findByUserAndPreference(user, preference);
+		preference.setSendPush(false);
+		if (optionalUsersPreference.isPresent()) {
+	    	usersPreference = optionalUsersPreference.get();
+	    	usersPreference.setPreference(preference);
+	    }
+	    else {
+	    	usersPreference = new UsersPreference();
+	    	usersPreference.setPreference(preference);
+	    	usersPreference.setUser(user);
+	    }
+		userPreferenceRepository.save(usersPreference);
+	}
+
+	public void subscribeSingleUser(User user) {
+		List<Supplier> suppliersToSubscribe = usersService.getFavoriteSuppliers(user);
+		List<String> topics = suppliersToSubscribe.stream().map((s) -> getSupplierTopic(s)).collect(Collectors.toList());
+		//client.post().uri(notifConfig.getSubscribeSingleUserUrl())
+	}
+	
+	private String getSupplierTopic(Supplier supplier) {
+		return notifConfig.getTopicsName().concat(supplier.getId().toString());
 	}
 }

@@ -23,4 +23,16 @@ public class NotificationsConfig {
 	
 	@JsonProperty("instance_info")
 	private String instanceInfo;
+	
+	@JsonProperty("topics_string")
+	private String topicsString;
+	
+	@JsonProperty("preference_id")
+	private Long preferenceId;
+	
+	@JsonProperty("topics_name")
+	private String topicsName;
+	
+	@JsonProperty("subscribe_single_user_url")
+	private String subscribeSingleUserUrl;
 }
