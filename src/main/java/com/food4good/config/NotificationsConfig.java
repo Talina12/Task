@@ -27,9 +27,6 @@ public class NotificationsConfig {
 	@JsonProperty("topics_string")
 	private String topicsString;
 	
-	@JsonProperty("preference_id")
-	private Long preferenceId;
-	
 	@JsonProperty("topics_name")
 	private String topicsName;
 	

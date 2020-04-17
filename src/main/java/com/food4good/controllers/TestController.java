@@ -41,7 +41,7 @@ public class TestController {
 		ArrayList <User> usersToSubscribe = new ArrayList<User>();
 		usersToSubscribe.add(usersRepository.findById((long) 20).get());
 		usersToSubscribe.add(usersRepository.findById((long) 3).get());
-		return pushNotificationService.subscribeUsers(usersToSubscribe, "test2", false);
+		return pushNotificationService.subscribeUsers(usersToSubscribe, "topic5", false);
 	}
 	
 	@PostMapping("/send")

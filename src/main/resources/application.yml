@@ -20,7 +20,6 @@ custom-properties:
     subscribe_single_user_url: "https://iid.googleapis.com/iid/v1/IID_TOKEN/rel/topics/"
     topics_string: "/topics/"
     topics_name: "topic"
-    preference_id: 1
 server:
   servlet:
     context-path: /backend/
