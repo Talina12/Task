@@ -31,11 +31,7 @@ public class SuppliersController {
         this.supplierService=supplierService;
         this.usersService=usersService;
     }
-    @CrossOrigin
-    @GetMapping(value = "/{supplierId}", produces = APPLICATION_JSON_VALUE)
-    public SupplierDTO supplierById(@PathVariable("supplierId") @Valid @NotNull Long supplierId) throws Exception {
-        return supplierService.getById(supplierId);
-    }
+
     @CrossOrigin
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public List<SupplierInfoDTO> getAllsuppliersInfo() throws Exception {

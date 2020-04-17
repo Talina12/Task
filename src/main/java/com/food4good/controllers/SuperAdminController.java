@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.food4good.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -18,12 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food4good.database.repositories.SupplierRepository;
-import com.food4good.dto.ProductDTO;
-import com.food4good.dto.SupplierInfoDTO;
-import com.food4good.dto.SupplierPermanentDTO;
-import com.food4good.dto.UsersDTO;
 import com.food4good.facad.SupplierService;
 import com.food4good.facad.UsersService;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
 @RestController
@@ -40,7 +39,11 @@ public class SuperAdminController {
 		this.supplierService = supplierService;
 		this.supplierRepository = supplierRepository;
 	}
-
+	@CrossOrigin
+	@GetMapping(value = "/suppliers/{supplierId}", produces = APPLICATION_JSON_VALUE)
+	public SupplierDTO supplierById(@PathVariable("supplierId") @Valid @NotNull Long supplierId) throws Exception {
+		return supplierService.getById(supplierId);
+	}
 
 	
 	@GetMapping("/allSuppliers")
@@ -69,15 +72,8 @@ public class SuperAdminController {
 	public ResponseEntity<SupplierInfoDTO> createSuppleir(@Validated @RequestBody SupplierInfoDTO supplierInfoDTO) throws Exception {
 		return ResponseEntity.ok(supplierService.createSupplier(supplierInfoDTO));
 	}
-/*<<<<<<< HEAD
-
-=======
-	
 	@GetMapping("/users")
 	public ResponseEntity<List<UsersDTO>> getAllUsers(){
 		return ResponseEntity.ok(usersService.getAll());
 	}
-	
-	G
->>>>>>> stash*/
 }

@@ -47,7 +47,7 @@ public class PushNotificationService {
     	this.userPreferenceRepository = userPreferenceRepository;
   //  	this.preferenceRepository = preferenceRepository;
     	this.usersService = usersService;
-    	this.preference = preferenceRepository.findById(notifConfig.getPreferenceId()).orElseThrow(() -> new Exception("Push notification preference not found"));
+    	//this.preference = preferenceRepository.findById(notifConfig.getPreferenceId()).orElseThrow(() -> new Exception("Push notification preference not found"));
     }
     
 	public void sendNotifications(List<NotificationDTO> notificationList) {
@@ -126,6 +126,7 @@ public class PushNotificationService {
 	}
 
 	private void saveUsersChoice(User user, boolean choice) {
+
 		UsersPreference usersPreference;
 		Optional<UsersPreference> optionalUsersPreference = userPreferenceRepository.findByUserAndPreference(user, preference);
 		preference.setSendPush(false);
