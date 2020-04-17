@@ -39,12 +39,12 @@ public class SuperAdminController {
 		this.supplierService = supplierService;
 		this.supplierRepository = supplierRepository;
 	}
+
 	@CrossOrigin
 	@GetMapping(value = "/suppliers/{supplierId}", produces = APPLICATION_JSON_VALUE)
 	public SupplierDTO supplierById(@PathVariable("supplierId") @Valid @NotNull Long supplierId) throws Exception {
 		return supplierService.getById(supplierId);
 	}
-
 	
 	@GetMapping("/allSuppliers")
 	public ResponseEntity<List<SupplierInfoDTO>> getAllSuppliers() throws Exception{
