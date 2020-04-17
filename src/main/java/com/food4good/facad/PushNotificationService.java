@@ -17,7 +17,6 @@ import com.food4good.config.NotificationsConfig;
 import com.food4good.database.entities.Supplier;
 import com.food4good.database.entities.User;
 import com.food4good.database.entities.UsersPreference;
-import com.food4good.database.repositories.PreferenceRepository;
 import com.food4good.database.repositories.UserPreferenceRepository;
 import com.food4good.dto.SubscribeUsersDTO;
 import com.food4good.dto.notifications.AppInstanceInfoDTO;
@@ -46,6 +45,7 @@ public class PushNotificationService {
 				  .build();
     	this.userPreferenceRepository = userPreferenceRepository;
         this.usersService = usersService;
+
     }
     
 	public void sendNotifications(List<NotificationDTO> notificationList) {
@@ -121,6 +121,7 @@ public class PushNotificationService {
 	}
 
 	private void saveUserChoice(User user, boolean choice) {
+
 		UsersPreference usersPreference;
 		Optional<UsersPreference> optionalUsersPreference = userPreferenceRepository.findByUser(user);
 		if (optionalUsersPreference.isPresent()) {
