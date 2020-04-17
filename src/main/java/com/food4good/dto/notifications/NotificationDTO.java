@@ -1,4 +1,4 @@
-package com.food4good.dto;
+package com.food4good.dto.notifications;
 
 import lombok.Getter;
 import lombok.Setter;

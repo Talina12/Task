@@ -5,6 +5,7 @@ import com.food4good.database.entities.User;
 import com.food4good.dto.NewOrderRequest;
 import com.food4good.dto.NewOrderResponse;
 import com.food4good.dto.OrderDTO;
+import com.food4good.dto.UndeliveredOrders;
 import com.food4good.dto.UpdateOrderRequest;
 import com.food4good.facad.OrderReport;
 import com.food4good.facad.OrderStatus;
@@ -81,9 +82,9 @@ public class OrdersControllers {
     }
 
     @GetMapping("/undelivered")
-    public ResponseEntity<Long> getUndeliveredOrders() throws Exception{
+    public ResponseEntity<UndeliveredOrders> getUndeliveredOrders() throws Exception{
     	User user = usersService.getByToken();
-    	return ResponseEntity.ok(ordersService.getUndelivered(user));
+    	return ResponseEntity.ok(new UndeliveredOrders(ordersService.getUndelivered(user)));
     }
 }
 

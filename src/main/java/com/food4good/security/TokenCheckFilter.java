@@ -33,7 +33,7 @@ public class TokenCheckFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("in TokenCheckFilter");
+        System.out.println("in "+getRole()+"Filter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         if(httpRequest.getMethod().equals(HttpMethod.OPTIONS.name()))
@@ -89,6 +89,6 @@ public class TokenCheckFilter extends GenericFilterBean {
     }
 
     public List<String> getSkipMethodList() {
-       return Arrays.asList("swagger", "login", "api-docs","error", "admin", "superAdmin");
+       return Arrays.asList("swagger", "login", "api-docs","error", "admin", "superAdmin", "test");
     }
 }

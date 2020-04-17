@@ -12,8 +12,15 @@ custom-properties:
   max_num_of_dishes: 20 
   super_admin_token: "12345678" 
   notifications:
-    key: "key = AIzaSyCNImaWhAQQf22tev_Ko4V4Ru123xNM6_U"
+    key: "key = AIzaSyCNImaWhAQQf22tev_Ko4V4Ru123xNM6_U"   
     url: "https://fcm.googleapis.com/fcm/send"
+    subscribe_url: "https://iid.googleapis.com/iid/v1:batchAdd"
+    unsubscribe_url: "https://iid.googleapis.com/iid/v1:batchRemove"
+    instanceinfo: "https://iid.googleapis.com/iid/info/"
+    subscribe_single_user_url: "https://iid.googleapis.com/iid/v1/IID_TOKEN/rel/topics/"
+    topics_string: "/topics/"
+    topics_name: "topic"
+    preference_id: 1
 server:
   servlet:
     context-path: /backend/

@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food4good.config.BadRequestException;
-import com.food4good.database.entities.Supplier;
 import com.food4good.database.repositories.SupplierRepository;
+import com.food4good.dto.ProductDTO;
+import com.food4good.dto.SupplierInfoDTO;
+import com.food4good.dto.SupplierPermanentDTO;
+import com.food4good.dto.UsersDTO;
 import com.food4good.facad.SupplierService;
 import com.food4good.facad.UsersService;
 

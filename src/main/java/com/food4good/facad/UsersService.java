@@ -1,42 +1,36 @@
 package com.food4good.facad;
 
 import com.food4good.config.BadRequestException;
-import com.food4good.config.NotificationsConfig;
+
 import com.food4good.config.Roles;
+
 import com.food4good.database.entities.Supplier;
+import com.food4good.database.entities.SupplierRate;
 import com.food4good.database.entities.User;
+import com.food4good.database.repositories.SupplierRateRepository;
 import com.food4good.database.repositories.SupplierRepository;
 import com.food4good.database.repositories.UsersRepository;
 import com.food4good.dto.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import javax.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersService {
     UsersRepository usersRepository;
     SupplierRepository supplierRepository;
-    private WebClient client;
-    private NotificationsConfig notifConfig;
+    SupplierRateRepository supplierRateRepository;
     
-    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository, NotificationsConfig notifConfig) {
+    public UsersService(UsersRepository usersRepository, SupplierRepository supplierRepository, SupplierRateRepository supplierRateRepository) {
         this.usersRepository = usersRepository;
         this.supplierRepository = supplierRepository;
-        this.notifConfig = notifConfig;
-        this.client = WebClient
-				  .builder()
-				  .baseUrl(notifConfig.getUrl())
-				  .build();
+        this.supplierRateRepository = supplierRateRepository;
     }
 
     public User getById(Long userId)  {
@@ -102,20 +96,6 @@ public class UsersService {
 		return usersRepository.save(userToSave);
 	}
 
-	public void sendNotifications(List<NotificationDTO> notificationList) {
-		WebClient.RequestBodySpec request;
-		request = client.post().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				               .header(HttpHeaders.AUTHORIZATION, notifConfig.getKey());
-		notificationList.forEach(n->send(n,request));
-	}
-	
-	private void send(NotificationDTO notification, WebClient.RequestBodySpec request) {
-		NotificationRequestDTO requestDTO = new NotificationRequestDTO(notification);
-		requestDTO.setPriority("normal");
-		requestDTO.getNotification().setIcon("myicon");
-	    request.bodyValue(requestDTO).retrieve().bodyToMono(Object.class).block();
-	}
-
 	public List<UsersDTO> getAll() {
 		List<User> fromDB= usersRepository.findAll();
 		List<UsersDTO> response=new ArrayList<>();
@@ -124,6 +104,12 @@ public class UsersService {
 			response.add(UsersDTO.convertFromEntity(user));
 		}
 		return response;
+	}
+	
+	public List<Supplier> getFavoriteSuppliers(User user){
+		List<SupplierRate> suppliersRate = supplierRateRepository.findByUser(user);
+		List<Supplier> suppliers = suppliersRate.stream().map(SupplierRate::getSupplier).collect(Collectors.toList());
+		return suppliers;
 	}
 
 }
