@@ -1,5 +1,6 @@
 package com.food4good.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,12 +20,14 @@ public class UserPreferenceController {
 	}
 	
 	@PostMapping("/unsubscribe")
-    public void unsubscribeUser() throws Exception {
+    public ResponseEntity<Object> unsubscribeUser() throws Exception {
     	pushNotificationService.unsubscribeSingleUser(userService.getByToken());
+    	return ResponseEntity.ok().build();
     }
 	
 	@PostMapping("/subscribe")
-    public void subscribeUser() throws Exception {
+    public ResponseEntity<Object> subscribeUser() throws Exception {
 		pushNotificationService.subscribeSingleUser(userService.getByToken());
+		return ResponseEntity.ok().build();
 	}
 }

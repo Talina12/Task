@@ -198,4 +198,10 @@ public class SupplierService {
 		product.setRealAmount(productDTO.getAmount());
 		productsRepository.save(product);
 	}
+	
+	public void setSupplierStatus(Long supplierId, boolean status) throws Exception {
+		Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new Exception("Supplier not found"));
+		supplier.setIsActive(status);
+		supplierRepository.save(supplier);
+	}
 }

@@ -76,4 +76,16 @@ public class SuperAdminController {
 	public ResponseEntity<List<UsersDTO>> getAllUsers(){
 		return ResponseEntity.ok(usersService.getAll());
 	}
-}////===============
+
+	@PostMapping("/inactive/{supplierId}")
+	public ResponseEntity<Object> setSupplierInactive(@PathVariable @NonNull Long supplierId) throws Exception{
+		supplierService.setSupplierStatus(supplierId, false);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/active/{supplierId}")
+	public ResponseEntity<Object> setSupplierActive(@PathVariable @NonNull Long supplierId) throws Exception{
+		supplierService.setSupplierStatus(supplierId, true);
+		return ResponseEntity.ok().build();	
+	}
+}
