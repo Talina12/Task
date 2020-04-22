@@ -7,6 +7,7 @@ import com.food4good.database.entities.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +27,12 @@ public class SupplierInfoDTO {
         supplierInfoDTO.getSupplierDTO().setId(supplier.getId());
         supplierInfoDTO.getSupplierDTO().setCreatedAt(supplier.getCreatedAt().toString());
         supplierInfoDTO.getSupplierDTO().setUpdatedAt(supplier.getUpdatedAt().toString());
-        supplierInfoDTO.getSupplierDTO().setOpenHours(objectMapper.readValue(supplier.getOpenHours(), Map.class));
+        try {
+        	supplierInfoDTO.getSupplierDTO().setOpenHours(objectMapper.readValue(supplier.getOpenHours(), Map.class));
+        }
+        		catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        			supplierInfoDTO.getSupplierDTO().setOpenHours(new HashMap<String, String>());
+        		};
         supplierInfoDTO.getSupplierDTO().setActive(supplier.getIsActive());
         List<ProductDTO> productDTOList = supplier.getProducts().stream().map(ProductDTO::convertFromEntity).collect(Collectors.toList());
         supplierInfoDTO.setProductDTOList(productDTOList);

@@ -7,6 +7,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,4 +27,5 @@ public class RestExceptionHandler extends ExceptionHandlerExceptionResolver {
 	    log.error("Error from WebClient - Status {}, Body {}", ex.getRawStatusCode(), ex.getResponseBodyAsString(), ex);
 	    return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
 	}
+	
 }
