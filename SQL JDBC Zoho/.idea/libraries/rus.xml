@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="rus">
+    <CLASSES>
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/adaptive" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/alwaysencrypted" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/azureactivedirectoryauthentication" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/connections" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/constrained" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/dataclassification" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/datatypes" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/resultsets" />
+      <root url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus/samples/sparse" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/Downloads/sqljdbc_8.2.2.0_rus/sqljdbc_8.2/rus" recursive="false" />
+  </library>
+</component>

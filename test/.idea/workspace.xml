@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b410bc50-62a9-4401-b899-0556ea9846a6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../Generics test/src/Basic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Generics test/src/GenericsTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Generics test/src/InheritBasic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Generics test/src/JenBox.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../test3/src/app.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/app/AppApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/BadRequestException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/GeocodingConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/GlobalProperties.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/NotificationsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/RestExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/Roles.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/config/SwaggerConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/AddressController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/AdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/LoginController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/OrdersControllers.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/SuperAdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/SuppliersController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/TestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/UserPreferenceController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/controllers/UsersControllers.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/AbstractEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/Filter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/OrderProducts.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/Orders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/Preference.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/Products.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/Supplier.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/SupplierFilters.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/SupplierRate.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/entities/UsersPreference.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/OrderProductsRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/OrdersRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/PreferenceRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/ProductsRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/SupplierRateRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/SupplierRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/UserPreferenceRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/database/repositories/UsersRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/AdminRegisterRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/AdminRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/BaseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/CoordinatesRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/CoordinatesResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/DestinationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/LoginReqestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/LoginResponseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/NewOrderProductRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/NewOrderProductResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/NewOrderRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/NewOrderResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/OrderDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/ProductDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/SingleDestinationRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/SubscribeUsersDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/SupplierByUserDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/SupplierDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/SupplierInfoDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/SupplierPermanentDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/UndeliveredOrders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/UpdateOrderRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/UsersDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/AddresInfoResult.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/AddressComponent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Distance.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Duration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Element.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Fare.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/GeoPoint.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Geometry.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/GoogleCoordinatesResults.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/GoogleDistanceResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Location.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Row.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/geocoding/Viewport.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/notifications/AppInstanceInfoDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/notifications/Error.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/notifications/NotificationDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/notifications/NotificationRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/notifications/Rel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/dto/notifications/SubscribeResultsDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/AddressService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/OrderReport.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/OrderStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/OrdersService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/ProductsService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/PushNotificationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/SupplierByUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/SupplierService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/facad/UsersService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/factory/AdminOrderList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/factory/AllOrdersFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/factory/OrderListHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/factory/SuperAdminOrderList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/factory/UserOrderList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/scheduled/ProductsScheduled.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/security/AdminFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/security/CustomWebSecurityConfigurerAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/security/SuperAdminFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/security/TokenCheckFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/food4good/security/UserPrincipal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/com/food4good/app/AppApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/com/food4good/controllers/SupliersControllerTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1awuSehudzk6gB6errN8ZxsH48h" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b410bc50-62a9-4401-b899-0556ea9846a6" name="Default Changelist" comment="" />
+      <created>1587658978056</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587658978056</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="121" y="0" key="#Project_Structure" timestamp="1622395507015">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="121" y="0" key="#Project_Structure/0.0.1280.680@0.0.1280.680" timestamp="1622395507015" />
+    <state x="91" y="0" key="new project wizard" timestamp="1622395535938">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="91" y="0" key="new project wizard/0.0.1280.680@0.0.1280.680" timestamp="1622395535938" />
+  </component>
+</project>
