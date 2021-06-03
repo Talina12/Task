@@ -22,9 +22,9 @@ import java.util.*;
 public class UserService {
 
     @Autowired
-    UserRepository usersRepository;
+    private UserRepository usersRepository;
     @Autowired
-    GlobalProperties globalProperties;
+    private GlobalProperties globalProperties;
     private Algorithm algorithm;
     private JWTVerifier jwtVerifier;
 
