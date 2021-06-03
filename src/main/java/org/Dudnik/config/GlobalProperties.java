@@ -13,5 +13,6 @@ import org.springframework.stereotype.Component;
 public class GlobalProperties {
     private String encriptionAlgorithm;
     private String key;
+    private String secret;
 }
 

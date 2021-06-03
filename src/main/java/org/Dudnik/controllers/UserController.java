@@ -28,8 +28,8 @@ public class UserController {
     }
 
     //the best way to chek Authorization header in Authorization filter
-    @GetMapping(path = "/get_user_name")
+    @GetMapping(path = "/get_name")
     public ResponseEntity<String> getUserName(@RequestHeader("Authorization")String token){
-        return ResponseEntity.ok(userService.getUserData(token));
+        return ResponseEntity.ok(userService.getUserName(token));
     }
 }

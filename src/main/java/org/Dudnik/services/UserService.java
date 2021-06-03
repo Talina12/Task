@@ -1,5 +1,11 @@
 package org.Dudnik.services;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.Dudnik.config.GlobalProperties;
 import org.Dudnik.config.UserNotFoundException;
 import org.Dudnik.database.entities.User;
 import org.Dudnik.database.repositories.UserRepository;
@@ -10,15 +16,22 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
 
-@Autowired
+    @Autowired
     UserRepository usersRepository;
+    @Autowired
+    GlobalProperties globalProperties;
+    private Algorithm algorithm;
+    private JWTVerifier jwtVerifier;
+
+    public UserService(){
+        algorithm = Algorithm.HMAC256(globalProperties.getSecret());
+        jwtVerifier = JWT.require(algorithm).withIssuer("auth0").build();
+    }
 
     public String  addUser(RegisterDTO data){
         String name = data.getName();
@@ -42,31 +55,29 @@ public class UserService {
     }
 
     private String getJwt(User user){
-        String jwt = Jwts.builder()
-                .setSubject(user.getEmail()) //save in application.properties
-                .setExpiration(System.currentTimeMillis() +100000000)
-                .claim("name", user.getName())
-                .claim("scope", "/users")
-                .signWith(
-                        SignatureAlgorithm.HS256,
-                        "secret".getBytes("UTF-8")
-                )
-                .compact();
-        return jwt;
+        Calendar expireCalendar = Calendar.getInstance();
+        expireCalendar.add(Calendar.HOUR, 2);
+        String token = JWT.create().withSubject(user.getEmail()).withExpiresAt(expireCalendar.getTime()).withClaim("name", user.getName())
+                                   .withIssuer("auth0").sign(algorithm);
+        return token;
     }
 
-    private String decodeJwt(String jwt){
-        //decode and return user email
-    }
-
-    private boolean validateJwt(String jwt){
-       // check expire date
+    private DecodedJWT verifyJwt(String token){
+        try {
+            DecodedJWT jwt = jwtVerifier.verify(token);
+            return jwt;
+        }
+        catch (JWTVerificationException exception){
+            return  null;
+        }
     }
 
 
     public String getUserName(String token) {
-        if (validateJwt(token))
-            Optional<User> user = usersRepository.findByEmail(validateJwt(token)).orElseThrow(() -> new UserNotFoundException(" user not found"));
+        DecodedJWT decodedToken = verifyJwt(token);
+        if (Objects.isNull(decodedToken))
+            throw new UserNotFoundException("token expired");
+        User user = usersRepository.findByEmail(decodedToken.getSubject()).orElseThrow(() -> new UserNotFoundException(" user not found"));
         return user.getName();
     }
 }
