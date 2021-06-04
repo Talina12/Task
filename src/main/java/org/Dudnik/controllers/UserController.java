@@ -5,6 +5,7 @@ import org.Dudnik.dto.RegisterDTO;
 import org.Dudnik.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,11 +20,11 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(path="/registration")
-    public ResponseEntity<String> addUser (@Valid @RequestBody RegisterDTO data) {
+    public ResponseEntity<String> addUser (@NonNull @Valid @RequestBody RegisterDTO data) {
          return ResponseEntity.ok(userService.addUser(data));
     }
     @PostMapping(path ="/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody LoginDTO loginData){
+    public ResponseEntity<String> loginUser(@NonNull @Valid @RequestBody LoginDTO loginData){
         return ResponseEntity.ok(userService.loginUser(loginData));
     }
 

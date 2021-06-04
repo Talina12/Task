@@ -35,7 +35,7 @@ public class UserService {
 
     public String  addUser(RegisterDTO data){
         String name = data.getName();
-        String email = data.getEmail();
+        String email = data.getEmail().toLowerCase();
         Optional<User> existingUser = usersRepository.findByEmail(email);
         if (existingUser.isPresent())
             throw new EntityExistsException("a user with such   email exists");
@@ -47,7 +47,7 @@ public class UserService {
 }
 
     public String loginUser(LoginDTO loginData) {
-        Optional<User> existingUser = usersRepository.findByEmail(loginData.getEmail());
+        Optional<User> existingUser = usersRepository.findByEmail(loginData.getEmail().toLowerCase());
         User user =  existingUser.orElseThrow(() -> new UserNotFoundException(" user not found"));
         if (!user.getPassword().equals(loginData.getPassword()))
             new  UserNotFoundException(" user not found");
