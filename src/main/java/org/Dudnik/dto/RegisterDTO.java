@@ -3,6 +3,7 @@ package org.Dudnik.dto;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.Dudnik.security.SafeInput;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -11,7 +12,7 @@ import javax.validation.constraints.Size;
 @Setter
 public class RegisterDTO {
     @NonNull
-    @Size(min = 2, max = 25)
+    @SafeInput
     private String name;
 
     @NonNull
@@ -19,7 +20,7 @@ public class RegisterDTO {
     private String email;
 
     @NonNull
-    @Size(min = 8, max = 15)
+    @SafeInput
     private String password;
 
 }
