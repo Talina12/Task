@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.Dudnik.config.GlobalProperties;
+import org.Dudnik.config.UserAlreadyExistException;
 import org.Dudnik.config.UserNotFoundException;
 import org.Dudnik.database.entities.User;
 import org.Dudnik.database.repositories.UserRepository;
@@ -21,16 +22,17 @@ import java.util.*;
 @Service
 public class UserService {
 
-    @Autowired
+
     private UserRepository usersRepository;
-    @Autowired
     private GlobalProperties globalProperties;
     private Algorithm algorithm;
     private JWTVerifier jwtVerifier;
 
-    public UserService(){
+    public UserService(UserRepository usersRepository, GlobalProperties globalProperties){
         algorithm = Algorithm.HMAC256(globalProperties.getSecret());
         jwtVerifier = JWT.require(algorithm).withIssuer("auth0").build();
+        this.usersRepository = usersRepository;
+        this.globalProperties = globalProperties;
     }
 
     public String  addUser(RegisterDTO data){
@@ -38,7 +40,7 @@ public class UserService {
         String email = data.getEmail().toLowerCase();
         Optional<User> existingUser = usersRepository.findByEmail(email);
         if (existingUser.isPresent())
-            throw new EntityExistsException("a user with such   email exists");
+            throw new UserAlreadyExistException("a user with such   email exists");
         else {
             User userToSave = new User(name,email, data.getPassword());
             usersRepository.save(userToSave);

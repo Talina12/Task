@@ -16,8 +16,11 @@ import javax.validation.Valid;
 
 public class UserController {
 
-    @Autowired
     private UserService userService;
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
 
     @PostMapping(path="/registration")
     public ResponseEntity<String> addUser (@NonNull @Valid @RequestBody RegisterDTO data) {

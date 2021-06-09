@@ -10,8 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = "main")
-//@EnableConfigurationProperties({ GlobalProperties.class })
+@SpringBootApplication(scanBasePackages = "org.Dudnik")
 @EnableJpaRepositories ("org.Dudnik.database.repositories")
 @EntityScan("org.Dudnik.database.entities")
 
