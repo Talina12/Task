@@ -1,5 +1,6 @@
 package org.Dudnik.controllers;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.Dudnik.dto.LoginDTO;
 import org.Dudnik.dto.RegisterDTO;
 import org.Dudnik.services.UserService;
@@ -31,9 +32,9 @@ public class UserController {
         return ResponseEntity.ok(userService.loginUser(loginData));
     }
 
-    //the best way to chek Authorization header in Authorization filter
+
     @GetMapping(path = "/get_name")
-    public ResponseEntity<String> getUserName(@RequestHeader("Authorization")String token){
-        return ResponseEntity.ok(userService.getUserName(token));
+    public ResponseEntity<String> getUserName(@RequestAttribute("decodedToken") DecodedJWT token){
+        return ResponseEntity.ok(userService.getUserName(token.getSubject()));
     }
 }

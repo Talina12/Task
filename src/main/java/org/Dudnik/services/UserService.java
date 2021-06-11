@@ -75,11 +75,8 @@ public class UserService {
     }
 
 
-    public String getUserName(String token) {
-        DecodedJWT decodedToken = verifyJwt(token);
-        if (Objects.isNull(decodedToken))
-            throw new UserNotFoundException("token expired");
-        User user = usersRepository.findByEmail(decodedToken.getSubject()).orElseThrow(() -> new UserNotFoundException(" user not found"));
+    public String getUserName(String email) {
+        User user = usersRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(" user not found"));
         return user.getName();
     }
 }
